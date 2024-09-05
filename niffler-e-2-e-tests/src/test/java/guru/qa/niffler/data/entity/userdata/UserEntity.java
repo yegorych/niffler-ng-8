@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Getter
