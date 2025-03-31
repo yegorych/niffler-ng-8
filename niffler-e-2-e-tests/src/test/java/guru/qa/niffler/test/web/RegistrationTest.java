@@ -3,11 +3,14 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(BrowserExtension.class)
 public class RegistrationTest {
     private static final Config CFG = Config.getInstance();
     public static Faker faker = Faker.instance();
