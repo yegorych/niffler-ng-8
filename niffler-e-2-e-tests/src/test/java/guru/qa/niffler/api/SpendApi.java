@@ -27,7 +27,7 @@ public interface SpendApi {
                                      @Query("to") Date to);
 
   @DELETE("internal/spends/remove")
-  Call<SpendJson> removeSpend(@Query("username") String username,
+  Call<Void> removeSpend(@Query("username") String username,
                               @Query("ids") List<String> ids);
 
   @GET("/internal/categories/all")

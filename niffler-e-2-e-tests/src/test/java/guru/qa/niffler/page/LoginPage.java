@@ -35,4 +35,11 @@ public class LoginPage {
             .should(text(BAD_CREDENTIALS_ERROR_MESSAGE));
     return this;
   }
+
+  public LoginPage isLoginPage(){
+    usernameInput.should(visible);
+    passwordInput.should(visible);
+    $("header").should(text("Log in")).should(visible);
+    return this;
+  }
 }

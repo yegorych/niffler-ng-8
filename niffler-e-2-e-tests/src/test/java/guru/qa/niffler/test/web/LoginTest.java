@@ -5,11 +5,13 @@ import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+@Slf4j
 @ExtendWith(BrowserExtension.class)
 public class LoginTest {
     private static final Config CFG = Config.getInstance();
@@ -32,12 +34,8 @@ public class LoginTest {
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-        Assertions.assertThrows(AssertionError.class,
-                ()-> loginPage.doLogin(faker.name().username(), faker.internet().password())
-                .assertHistorySpendingIsVisible()
-                .assertStatisticsIsVisible()
-        );
-        loginPage.assertBadCredentials();
+        loginPage.doLogin(faker.name().username(), faker.internet().password());
+        loginPage.isLoginPage().assertBadCredentials();
 
     }
 }

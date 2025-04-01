@@ -32,7 +32,7 @@ public class SpendApiClient {
       } catch (IOException e) {
           throw new AssertionError(e);
       }
-      Assertions.assertEquals(200, response.code());
+      Assertions.assertTrue(response.isSuccessful());
       return response.body();
   }
 
@@ -52,8 +52,8 @@ public class SpendApiClient {
       return executeCall(spendApi.getAllSpends(username, currency, from, to));
   }
 
-  public SpendJson removeSpend(String username, List<String> id) {
-      return executeCall(spendApi.removeSpend(username, id));
+  public void removeSpend(String username, List<String> id) {
+      executeCall(spendApi.removeSpend(username, id));
   }
 
   public List<CategoryJson> getAllCategories(String username, boolean excludeArchived) {
