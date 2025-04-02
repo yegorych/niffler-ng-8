@@ -61,7 +61,7 @@ public class UsersQueueExtension implements
   @Override
   public void beforeTestExecution(ExtensionContext context) {
     Arrays.stream(context.getRequiredTestMethod().getParameters())
-            .filter(parameter -> parameter.isAnnotationPresent(UserType.class))
+            .filter(parameter -> parameter.isAnnotationPresent(UserType.class) && parameter.getType().isAssignableFrom(StaticUser.class))
             .map(parameter -> parameter.getAnnotation(UserType.class)).filter(Objects::nonNull)
             .forEach(ut -> {
                 Optional<StaticUser> user = Optional.empty();
