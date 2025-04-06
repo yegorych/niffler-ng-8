@@ -67,7 +67,7 @@ public class UsersQueueExtension implements
                 Optional<StaticUser> user = Optional.empty();
                 StopWatch sw = StopWatch.createStarted();
                 while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30){
-                    user = getStaticUser(ut);
+                    user = Optional.ofNullable(getQueueForType(ut.value()).poll());
                 }
                 Allure.getLifecycle().updateTestCase(testCase -> testCase.setStart(new Date().getTime()));
 
@@ -89,7 +89,7 @@ public class UsersQueueExtension implements
     Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(
         context.getUniqueId(), Map.class);
     for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
-        returnUserToQueue(e);
+        getQueueForType(e.getKey().value()).add(e.getValue());
     }
   }
 
@@ -108,23 +108,13 @@ public class UsersQueueExtension implements
               .orElseThrow(() -> new IllegalArgumentException("Annotation UserType is missing on the parameter."));
 
   }
-
-
-    private static Optional<StaticUser> getStaticUser(UserType ut) {
-        return switch (ut.value()){
-            case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-            case WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
-            case WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
-            case WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
+    private static Queue<StaticUser> getQueueForType(UserType.Type type) {
+        return switch (type) {
+            case EMPTY -> EMPTY_USERS;
+            case WITH_FRIEND -> WITH_FRIEND_USERS;
+            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
+            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS;
         };
     }
 
-    private static void returnUserToQueue(Map.Entry<UserType, StaticUser> e) {
-        switch (e.getKey().value()){
-            case EMPTY -> EMPTY_USERS.add(e.getValue());
-            case WITH_FRIEND -> WITH_FRIEND_USERS.add(e.getValue());
-            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(e.getValue());
-            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(e.getValue());
-        }
-    }
 }
