@@ -21,6 +21,7 @@ public class GhApiClient {
 
   @SneakyThrows
   public String issueState(String issueNumber) {
+    System.out.println(System.getenv(GH_TOKEN_ENV));
     JsonNode responseBody = ghApi.issue(
         "Bearer " + System.getenv(GH_TOKEN_ENV),
         issueNumber

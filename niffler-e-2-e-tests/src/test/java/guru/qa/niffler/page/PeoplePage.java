@@ -1,10 +1,8 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.component.Header;
+import guru.qa.niffler.page.component.Header;
 import lombok.Getter;
 
 import static com.codeborne.selenide.Condition.text;

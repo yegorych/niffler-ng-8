@@ -3,10 +3,8 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.component.Header;
+import guru.qa.niffler.page.component.Header;
 import lombok.Getter;
-
-import java.security.PublicKey;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;

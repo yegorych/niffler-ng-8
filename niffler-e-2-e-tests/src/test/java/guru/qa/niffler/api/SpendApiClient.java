@@ -1,6 +1,5 @@
 package guru.qa.niffler.api;
 
-import com.github.javafaker.Cat;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
