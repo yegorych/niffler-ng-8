@@ -13,12 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 
-@ExtendWith(BrowserExtension.class)
+@ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
 public class FriendsWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
@@ -29,7 +28,6 @@ public class FriendsWebTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void friendsTableShouldBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
@@ -40,7 +38,6 @@ public class FriendsWebTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
@@ -51,7 +48,6 @@ public class FriendsWebTest {
     }
 
     @Test
-    @ExtendWith(UsersQueueExtension.class)
     void outcomeInvitationBePresentInAllPeoplesTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
