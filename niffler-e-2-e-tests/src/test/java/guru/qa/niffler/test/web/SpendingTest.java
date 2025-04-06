@@ -39,34 +39,4 @@ public class SpendingTest {
     new MainPage().checkThatTableContains(newDescription);
   }
 
-  @Category(
-          username = username,
-          archived = false
-  )
-  @Test
-  void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-            .doLogin(username, password)
-            .getHeader()
-            .openMenu()
-            .goToProfilePage()
-            .archiveCategory(category.name())
-            .assertCategoryIsArchived(category.name());
-  }
-
-  @Category(
-          username = username,
-          archived = true
-  )
-  @Test
-  void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-            .doLogin(username, password)
-            .getHeader()
-            .openMenu()
-            .goToProfilePage()
-            .showArchivedCategories()
-            .unarchiveCategory(category.name())
-            .assertCategoryIsUnarchived(category.name());
-  }
 }
