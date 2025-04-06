@@ -3,18 +3,21 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.TestsMethodContextExtension;
 import guru.qa.niffler.page.LoginPage;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomPassword;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
 @Slf4j
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class LoginTest {
     private static final Config CFG = Config.getInstance();
     LoginPage loginPage;

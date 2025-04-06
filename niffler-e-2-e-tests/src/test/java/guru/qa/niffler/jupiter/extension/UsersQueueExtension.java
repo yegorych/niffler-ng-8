@@ -88,9 +88,12 @@ public class UsersQueueExtension implements
   public void afterTestExecution(ExtensionContext context) {
     Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(
         context.getUniqueId(), Map.class);
-    for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
-        getQueueForType(e.getKey().value()).add(e.getValue());
+    if (map != null) {
+        for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
+            getQueueForType(e.getKey().value()).add(e.getValue());
+        }
     }
+
   }
 
   @Override

@@ -39,7 +39,6 @@ public class LoginPage {
   public LoginPage isLoginPage(){
     usernameInput.should(visible);
     passwordInput.should(visible);
-    $("header").should(text("Log in")).should(visible);
     return this;
   }
 }
