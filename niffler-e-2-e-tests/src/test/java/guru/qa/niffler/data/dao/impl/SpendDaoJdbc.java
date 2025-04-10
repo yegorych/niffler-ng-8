@@ -3,13 +3,13 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.SpendDao;
+import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import guru.qa.niffler.model.CurrencyValues;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpendDaoJdbc implements SpendDao {
@@ -20,12 +20,12 @@ public class SpendDaoJdbc implements SpendDao {
   public SpendEntity create(SpendEntity spend) {
     try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
-          "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) " +
-              "VALUES ( ?, ?, ?, ?, ?, ?)",
-          Statement.RETURN_GENERATED_KEYS
+              "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) " +
+                      "VALUES ( ?, ?, ?, ?, ?, ?)",
+              Statement.RETURN_GENERATED_KEYS
       )) {
         ps.setString(1, spend.getUsername());
-        ps.setDate(2, spend.getSpendDate());
+        ps.setDate(2, new Date(spend.getSpendDate().getTime()));
         ps.setString(3, spend.getCurrency().name());
         ps.setDouble(4, spend.getAmount());
         ps.setString(5, spend.getDescription());
@@ -48,4 +48,75 @@ public class SpendDaoJdbc implements SpendDao {
       throw new RuntimeException(e);
     }
   }
+
+  @Override
+  public Optional<SpendEntity> findSpendById(UUID id) {
+    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+      try (PreparedStatement ps = connection.prepareStatement(
+              "SELECT * FROM spend WHERE id = ?")) {
+        ps.setObject(1, id);
+        ps.execute();
+        try (ResultSet rs = ps.getResultSet()) {
+          return rs.next() ? Optional.of(mapResultSetToSpendEntity(rs)) : Optional.empty();
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<SpendEntity> findAllByUsername(String username) {
+    List<SpendEntity> seList = new ArrayList<>();
+    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+      try (PreparedStatement ps = connection.prepareStatement(
+              "SELECT * FROM spend WHERE username = ?")) {
+        ps.setObject(1, username);
+        ps.execute();
+        try (ResultSet rs = ps.getResultSet()) {
+          while (rs.next()) {
+            seList.add(mapResultSetToSpendEntity(rs));
+          }
+          return seList;
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+
+  @Override
+  public void delete(SpendEntity spend) {
+    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+      try (PreparedStatement ps = connection.prepareStatement(
+              "DELETE FROM spend WHERE id = ?")) {
+        ps.setObject(1, spend.getId());
+        ps.execute();
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+
+  private SpendEntity mapResultSetToSpendEntity(ResultSet rs) {
+    try {
+      SpendEntity spendEntity = new SpendEntity();
+      CategoryEntity categoryEntity = new CategoryEntity();
+      spendEntity.setId(rs.getObject("id", UUID.class));
+      spendEntity.setUsername(rs.getString("username"));
+      spendEntity.setSpendDate(rs.getDate("spend_date"));
+      spendEntity.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+      spendEntity.setAmount(rs.getDouble("amount"));
+      spendEntity.setDescription(rs.getString("description"));
+      categoryEntity.setId(rs.getObject("category_id", UUID.class));
+      spendEntity.setCategory(categoryEntity);
+      return spendEntity;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
 }
