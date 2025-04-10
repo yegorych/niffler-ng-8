@@ -78,7 +78,7 @@ public class UserdataDaoJdbc implements UserdataDao {
 
     @Override
     public void delete(UserEntity user) {
-        try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
+        try (Connection connection = Databases.connection(CFG.userdataJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "DELETE FROM \"user\" WHERE id = ?")) {
                 ps.setObject(1, user.getId());
