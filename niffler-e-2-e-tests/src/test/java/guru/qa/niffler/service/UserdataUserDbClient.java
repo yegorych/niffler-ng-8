@@ -2,11 +2,10 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.impl.UserdataUserDaoJdbc;
-import guru.qa.niffler.data.entity.spend.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.TransactionIsolation;
 import guru.qa.niffler.model.UserJson;
 
-import java.sql.Connection;
 import java.util.Optional;
 import java.util.UUID;
 

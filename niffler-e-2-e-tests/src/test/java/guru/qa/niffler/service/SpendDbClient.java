@@ -1,7 +1,6 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
 import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
@@ -10,11 +9,11 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.TransactionIsolation;
 
-import static guru.qa.niffler.data.Databases.transaction;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static guru.qa.niffler.data.Databases.transaction;
 
 public class SpendDbClient {
 

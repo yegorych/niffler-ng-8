@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.entity.spend;
+package guru.qa.niffler.data.entity.auth;
 
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.AuthorityJson;
