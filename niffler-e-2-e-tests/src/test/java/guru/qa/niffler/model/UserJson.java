@@ -1,7 +1,7 @@
 package guru.qa.niffler.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import guru.qa.niffler.data.entity.spend.UserEntity;
+import guru.qa.niffler.data.entity.userdata.UserEntity;
 
 import java.util.UUID;
 
@@ -20,9 +20,9 @@ public record UserJson(
     @JsonProperty("currency")
     CurrencyValues currency,
     @JsonProperty("photo")
-    String photo,
+    byte[] photo,
     @JsonProperty("photoSmall")
-    String photoSmall) {
+    byte[] photoSmall) {
     public static UserJson fromEntity(UserEntity entity) {
         return new UserJson(
                 entity.getId(),
@@ -31,8 +31,8 @@ public record UserJson(
                 entity.getSurname(),
                 entity.getFullname(),
                 entity.getCurrency(),
-                entity.getPhoto().toString(),
-                entity.getPhotoSmall().toString()
+                entity.getPhoto(),
+                entity.getPhotoSmall()
         );
     }
 }

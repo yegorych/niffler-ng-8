@@ -14,36 +14,38 @@ import java.util.UUID;
 
 public class SpendDaoJdbc implements SpendDao {
 
-  private static final Config CFG = Config.getInstance();
+  private final Connection connection;
+
+  public SpendDaoJdbc(Connection connection) {
+    this.connection = connection;
+  }
 
   @Override
   public SpendEntity create(SpendEntity spend) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
-      try (PreparedStatement ps = connection.prepareStatement(
-              "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) " +
-                      "VALUES ( ?, ?, ?, ?, ?, ?)",
-              Statement.RETURN_GENERATED_KEYS
-      )) {
-        ps.setString(1, spend.getUsername());
-        ps.setDate(2, new Date(spend.getSpendDate().getTime()));
-        ps.setString(3, spend.getCurrency().name());
-        ps.setDouble(4, spend.getAmount());
-        ps.setString(5, spend.getDescription());
-        ps.setObject(6, spend.getCategory().getId());
+    try (PreparedStatement ps = connection.prepareStatement(
+        "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) " +
+            "VALUES ( ?, ?, ?, ?, ?, ?)",
+        Statement.RETURN_GENERATED_KEYS
+    )) {
+      ps.setString(1, spend.getUsername());
+      ps.setDate(2, spend.getSpendDate());
+      ps.setString(3, spend.getCurrency().name());
+      ps.setDouble(4, spend.getAmount());
+      ps.setString(5, spend.getDescription());
+      ps.setObject(6, spend.getCategory().getId());
 
-        ps.executeUpdate();
+      ps.executeUpdate();
 
-        final UUID generatedKey;
-        try (ResultSet rs = ps.getGeneratedKeys()) {
-          if (rs.next()) {
-            generatedKey = rs.getObject("id", UUID.class);
-          } else {
-            throw new SQLException("Can`t find id in ResultSet");
-          }
+      final UUID generatedKey;
+      try (ResultSet rs = ps.getGeneratedKeys()) {
+        if (rs.next()) {
+          generatedKey = rs.getObject("id", UUID.class);
+        } else {
+          throw new SQLException("Can`t find id in ResultSet");
         }
-        spend.setId(generatedKey);
-        return spend;
       }
+      spend.setId(generatedKey);
+      return spend;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -51,7 +53,6 @@ public class SpendDaoJdbc implements SpendDao {
 
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
               "SELECT * FROM spend WHERE id = ?")) {
         ps.setObject(1, id);
@@ -59,7 +60,6 @@ public class SpendDaoJdbc implements SpendDao {
         try (ResultSet rs = ps.getResultSet()) {
           return rs.next() ? Optional.of(mapResultSetToSpendEntity(rs)) : Optional.empty();
         }
-      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -68,7 +68,6 @@ public class SpendDaoJdbc implements SpendDao {
   @Override
   public List<SpendEntity> findAllByUsername(String username) {
     List<SpendEntity> seList = new ArrayList<>();
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
               "SELECT * FROM spend WHERE username = ?")) {
         ps.setObject(1, username);
@@ -79,7 +78,6 @@ public class SpendDaoJdbc implements SpendDao {
           }
           return seList;
         }
-      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -88,12 +86,10 @@ public class SpendDaoJdbc implements SpendDao {
 
   @Override
   public void delete(SpendEntity spend) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
               "DELETE FROM spend WHERE id = ?")) {
         ps.setObject(1, spend.getId());
         ps.execute();
-      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
