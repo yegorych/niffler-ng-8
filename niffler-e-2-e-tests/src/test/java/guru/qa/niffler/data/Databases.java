@@ -2,6 +2,7 @@ package guru.qa.niffler.data;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
+import guru.qa.niffler.model.TransactionIsolation;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 import org.apache.commons.lang3.StringUtils;
@@ -29,10 +30,11 @@ public class Databases {
   public record XaConsumer(Consumer<Connection> function, String jdbcUrl) {
   }
 
-  public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+  public static <T> T transaction(Function<Connection, T> function, String jdbcUrl, TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
+      connection.setTransactionIsolation(transactionIsolation.level);
       connection.setAutoCommit(false);
       T result = function.apply(connection);
       connection.commit();
@@ -51,13 +53,15 @@ public class Databases {
     }
   }
 
-  public static <T> T xaTransaction(XaFunction<T>... actions) {
+  public static <T> T xaTransaction(TransactionIsolation transactionIsolation, XaFunction<T>... actions) {
     UserTransaction ut = new UserTransactionImp();
     try {
       ut.begin();
       T result = null;
       for (XaFunction<T> action : actions) {
-        result = action.function.apply(connection(action.jdbcUrl));
+        Connection connection = connection(action.jdbcUrl);
+        connection.setTransactionIsolation(transactionIsolation.level);
+        result = action.function.apply(connection);
       }
       ut.commit();
       return result;
@@ -72,10 +76,11 @@ public class Databases {
   }
 
 
-  public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+  public static void transaction(Consumer<Connection> consumer, String jdbcUrl, TransactionIsolation transactionIsolation) {
     Connection connection = null;
     try {
       connection = connection(jdbcUrl);
+      connection.setTransactionIsolation(transactionIsolation.level);
       connection.setAutoCommit(false);
       consumer.accept(connection);
       connection.commit();
@@ -93,12 +98,14 @@ public class Databases {
     }
   }
 
-  public static void xaTransaction(XaConsumer... actions) {
+  public static void xaTransaction(TransactionIsolation transactionIsolation, XaConsumer... actions) {
     UserTransaction ut = new UserTransactionImp();
     try {
       ut.begin();
       for (XaConsumer action : actions) {
-        action.function.accept(connection(action.jdbcUrl));
+        Connection connection = connection(action.jdbcUrl);
+        connection.setTransactionIsolation(transactionIsolation.level);
+        action.function.accept(connection);
       }
       ut.commit();
     } catch (Exception e) {
@@ -130,7 +137,7 @@ public class Databases {
     );
   }
 
-  private static Connection connection(String jdbcUrl) throws SQLException {
+  private static Connection connection(String jdbcUrl) {
     return threadConnections.computeIfAbsent(
         Thread.currentThread().threadId(),
         key -> {

@@ -14,8 +14,6 @@ import java.util.UUID;
 
 public class SpendDaoJdbc implements SpendDao {
 
-  private static final Config CFG = Config.getInstance();
-
   private final Connection connection;
 
   public SpendDaoJdbc(Connection connection) {
@@ -55,7 +53,6 @@ public class SpendDaoJdbc implements SpendDao {
 
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
               "SELECT * FROM spend WHERE id = ?")) {
         ps.setObject(1, id);
@@ -63,7 +60,6 @@ public class SpendDaoJdbc implements SpendDao {
         try (ResultSet rs = ps.getResultSet()) {
           return rs.next() ? Optional.of(mapResultSetToSpendEntity(rs)) : Optional.empty();
         }
-      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -72,7 +68,6 @@ public class SpendDaoJdbc implements SpendDao {
   @Override
   public List<SpendEntity> findAllByUsername(String username) {
     List<SpendEntity> seList = new ArrayList<>();
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
               "SELECT * FROM spend WHERE username = ?")) {
         ps.setObject(1, username);
@@ -83,7 +78,6 @@ public class SpendDaoJdbc implements SpendDao {
           }
           return seList;
         }
-      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -92,12 +86,10 @@ public class SpendDaoJdbc implements SpendDao {
 
   @Override
   public void delete(SpendEntity spend) {
-    try (Connection connection = Databases.connection(CFG.spendJdbcUrl())) {
       try (PreparedStatement ps = connection.prepareStatement(
               "DELETE FROM spend WHERE id = ?")) {
         ps.setObject(1, spend.getId());
         ps.execute();
-      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
