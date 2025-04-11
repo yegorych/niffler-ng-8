@@ -29,4 +29,5 @@ public class AuthDbClient {
         }, CFG.authJdbcUrl(), TransactionIsolation.READ_UNCOMMITTED);
     }
 
+
 }

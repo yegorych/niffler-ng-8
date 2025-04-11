@@ -14,12 +14,29 @@ import java.util.Date;
 public class JdbcTest {
 
     @Test
+    void successfulTransactionTest() {
+        AuthDbClient authDbClient = new AuthDbClient();
+        authDbClient.createUser(
+                new AuthUserJson(
+                        null,
+                        RandomDataUtils.randomUsername(),
+                        "12345",
+                        true,
+                        true,
+                        true,
+                        true
+                )
+        );
+    }
+
+    @Test
     void successfulXaTransactionTest() {
         UserDbClient userDbClient = new UserDbClient();
+        String username = RandomDataUtils.randomUsername();
         userDbClient.createUserAuthAndUserdata(
                 new AuthUserJson(
                         null,
-                        "yegor_test2",
+                        username,
                         "12345",
                         true,
                         true,
@@ -28,10 +45,10 @@ public class JdbcTest {
                 ),
                 new UserJson(
                         null,
-                        "yegor_test2",
-                        "egor",
-                        "rysh",
-                        "yegorych",
+                        username,
+                        null,
+                        null,
+                        null,
                         CurrencyValues.RUB,
                         null,
                         null
