@@ -1,7 +1,8 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.springJdbc;
 
 import guru.qa.niffler.data.dao.AuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
+import guru.qa.niffler.model.Authority;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -47,5 +48,20 @@ public class AuthAuthorityDaoSpringJdbc implements AuthorityDao {
     @Override
     public void delete(AuthorityEntity authority) {
 
+    }
+
+    @Override
+    public List<AuthorityEntity> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query(
+                "SELECT * from authority",
+                (rs, rowNum) -> {
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setId(rs.getObject("id", UUID.class));
+                    ae.setAuthority(rs.getObject("authority", Authority.class));
+                    ae.setUserId(rs.getObject("user_id", UUID.class));
+                    return ae;
+                }
+        );
     }
 }

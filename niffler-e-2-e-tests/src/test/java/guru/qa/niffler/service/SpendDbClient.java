@@ -1,8 +1,10 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
-import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
+import guru.qa.niffler.data.dao.impl.jdbc.CategoryDaoJdbc;
+import guru.qa.niffler.data.dao.impl.jdbc.SpendDaoJdbc;
+import guru.qa.niffler.data.dao.impl.springJdbc.CategoryDaoSpringJdbc;
+import guru.qa.niffler.data.dao.impl.springJdbc.SpendDaoSpringJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.CategoryJson;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.Databases.dataSource;
 import static guru.qa.niffler.data.Databases.transaction;
 
 public class SpendDbClient {
@@ -32,6 +35,13 @@ public class SpendDbClient {
                     );
                 },
                 CFG.spendJdbcUrl(), TransactionIsolation.READ_UNCOMMITTED
+        );
+    }
+
+    public SpendJson createSpendSpring(SpendJson spend) {
+        return SpendJson.fromEntity(
+                new SpendDaoSpringJdbc(dataSource(CFG.spendJdbcUrl()))
+                        .create(SpendEntity.fromJson(spend))
         );
     }
 
@@ -76,6 +86,13 @@ public class SpendDbClient {
 
     }
 
+    public CategoryJson createCategorySpring(CategoryJson category) {
+        return CategoryJson.fromEntity(
+                new CategoryDaoSpringJdbc(dataSource(CFG.spendJdbcUrl()))
+                        .create(CategoryEntity.fromJson(category))
+        );
+    }
+
     public Optional<CategoryJson> findCategoryById(UUID id) {
         return transaction(connection -> {
             return new CategoryDaoJdbc(connection).findCategoryById(id).map(CategoryJson::fromEntity);
@@ -105,6 +122,9 @@ public class SpendDbClient {
         transaction(connection -> {
             new CategoryDaoJdbc(connection).deleteCategory(CategoryEntity.fromJson(category));
         }, CFG.spendJdbcUrl(), TransactionIsolation.READ_UNCOMMITTED);
+    }
 
+    public void deleteCategorySpring(CategoryJson category) {
+        new CategoryDaoSpringJdbc(dataSource(CFG.spendJdbcUrl())).deleteCategory(CategoryEntity.fromJson(category));
     }
 }

@@ -1,7 +1,5 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
-import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
@@ -90,6 +88,23 @@ public class SpendDaoJdbc implements SpendDao {
               "DELETE FROM spend WHERE id = ?")) {
         ps.setObject(1, spend.getId());
         ps.execute();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<SpendEntity> findAll() {
+    List<SpendEntity> seList = new ArrayList<>();
+    try (PreparedStatement ps = connection.prepareStatement(
+            "SELECT * FROM spend")) {
+      ps.execute();
+      try (ResultSet rs = ps.getResultSet()) {
+        while (rs.next()) {
+          seList.add(mapResultSetToSpendEntity(rs));
+        }
+        return seList;
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.dao.impl;
+package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.data.dao.AuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
@@ -65,6 +65,29 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
             ps.setObject(1, authority.getId());
             ps.execute();
         } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AuthorityEntity> findAll() {
+        List<AuthorityEntity> aeList = new ArrayList<>();
+        try(PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM authority"
+        )){
+            ps.execute();
+            try(ResultSet rs = ps.getResultSet()){
+                while(rs.next()){
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setId(rs.getObject("id", UUID.class));
+                    ae.setAuthority(rs.getObject("authority", Authority.class));
+                    ae.setUserId(rs.getObject("user_id", UUID.class));
+                    aeList.add(ae);
+                }
+                return aeList;
+            }
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
