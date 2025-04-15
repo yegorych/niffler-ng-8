@@ -1,6 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.data.dao.AuthAuthorityDao;
+import guru.qa.niffler.data.dao.AuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,8 +8,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
 
-public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
+public class AuthAuthorityDaoSpringJdbc implements AuthorityDao {
 
   private final DataSource dataSource;
 
@@ -36,4 +38,14 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
         }
     );
   }
+
+    @Override
+    public List<AuthorityEntity> findByUserId(UUID id) {
+        return List.of();
+    }
+
+    @Override
+    public void delete(AuthorityEntity authority) {
+
+    }
 }

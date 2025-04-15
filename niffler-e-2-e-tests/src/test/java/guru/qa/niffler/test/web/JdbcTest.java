@@ -2,7 +2,7 @@ package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.model.*;
 import guru.qa.niffler.service.AuthDbClient;
-import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.service.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +26,7 @@ public class JdbcTest {
 
     @Test
     void successfulXaTransactionTest() {
-        UserDbClient userDbClient = new UserDbClient();
+        UsersDbClient userDbClient = new UsersDbClient();
         String username = RandomDataUtils.randomUsername();
         userDbClient.createUserAuthAndUserdata(
                 new AuthUserJson(
@@ -53,7 +53,7 @@ public class JdbcTest {
 
     @Test
     void failedXaTransactionTest() {
-        UserDbClient userDbClient = new UserDbClient();
+        UsersDbClient userDbClient = new UsersDbClient();
         userDbClient.createUserAuthAndUserdata(
                 new AuthUserJson(
                         null,
@@ -88,7 +88,6 @@ public class JdbcTest {
                         null,
                         null,
                         CurrencyValues.RUB,
-                        null,
                         null,
                         null
                 )

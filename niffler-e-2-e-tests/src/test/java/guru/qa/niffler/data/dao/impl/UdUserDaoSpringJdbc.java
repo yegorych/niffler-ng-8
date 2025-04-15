@@ -1,6 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.data.dao.UdUserDao;
+import guru.qa.niffler.data.dao.UserdataDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UdUserDaoSpringJdbc implements UdUserDao {
+public class UdUserDaoSpringJdbc implements UserdataDao {
 
   private final DataSource dataSource;
 
@@ -56,5 +56,15 @@ public class UdUserDaoSpringJdbc implements UdUserDao {
             id
         )
     );
+  }
+
+  @Override
+  public Optional<UserEntity> findByUsername(String username) {
+    return Optional.empty();
+  }
+
+  @Override
+  public void delete(UserEntity user) {
+
   }
 }

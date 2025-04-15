@@ -56,4 +56,14 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         )
     );
   }
+
+  @Override
+  public Optional<AuthUserEntity> findByUsername(String username) {
+    return Optional.empty();
+  }
+
+  @Override
+  public void delete(AuthUserEntity authUser) {
+
+  }
 }
