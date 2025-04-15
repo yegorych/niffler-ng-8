@@ -2,7 +2,7 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.impl.AuthUserDaoJdbc;
-import guru.qa.niffler.data.dao.impl.AuthorityDaoJdbc;
+import guru.qa.niffler.data.dao.impl.AuthAuthorityDaoJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.AuthUserJson;
@@ -19,11 +19,11 @@ public class AuthDbClient {
             AuthUserEntity authUser = new AuthUserDaoJdbc(connection).create(AuthUserEntity.fromJson(user));
             AuthorityEntity authority = new AuthorityEntity();
 
-            authority.setUser(authUser);
+            authority.setUserId(authUser.getId());
             authority.setAuthority(Authority.read);
-            new AuthorityDaoJdbc(connection).create(authority);
+            new AuthAuthorityDaoJdbc(connection).create(authority);
             authority.setAuthority(Authority.write);
-            new AuthorityDaoJdbc(connection).create(authority);
+            new AuthAuthorityDaoJdbc(connection).create(authority);
 
             return AuthUserJson.fromEntity(authUser);
         }, CFG.authJdbcUrl(), TransactionIsolation.READ_UNCOMMITTED);

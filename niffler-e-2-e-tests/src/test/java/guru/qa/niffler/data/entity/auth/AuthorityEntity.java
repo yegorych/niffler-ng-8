@@ -16,13 +16,13 @@ public class AuthorityEntity implements Serializable {
 
   private Authority authority;
 
-  private AuthUserEntity user;
+  private UUID userId;
 
   public static AuthorityEntity fromJson(AuthorityJson json) {
     AuthorityEntity ae = new AuthorityEntity();
     ae.setId(json.id());
     ae.setAuthority(json.authority());
-    ae.setUser(AuthUserEntity.fromJson(json.user()));
+    ae.setUserId(json.userId());
     return ae;
   }
 
