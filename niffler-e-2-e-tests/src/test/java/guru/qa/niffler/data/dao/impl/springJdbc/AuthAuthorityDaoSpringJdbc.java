@@ -58,7 +58,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthorityDao {
                 (rs, rowNum) -> {
                     AuthorityEntity ae = new AuthorityEntity();
                     ae.setId(rs.getObject("id", UUID.class));
-                    ae.setAuthority(rs.getObject("authority", Authority.class));
+                    ae.setAuthority(Authority.valueOf(rs.getString("authority")));
                     ae.setUserId(rs.getObject("user_id", UUID.class));
                     return ae;
                 }
