@@ -32,7 +32,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                             Optional<CategoryJson> cj = spendDbClient.findCategoryByUsernameAndCategoryName(annotation.username(), spend.category());
                             CategoryJson categoryJson = new CategoryJson(null, spend.category(), annotation.username(), false);
 
-                            categoryJson = cj.isPresent() ? cj.get() : spendDbClient.createCategory(categoryJson);
+                            categoryJson = cj.isPresent() ? cj.get() : spendDbClient.createCategorySpring(categoryJson);
                             SpendJson spendJson = new SpendJson(
                                     null,
                                     new Date(),
@@ -42,7 +42,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                                     spend.description(),
                                     annotation.username()
                             );
-                            SpendJson created = spendDbClient.createSpend(spendJson);
+                            SpendJson created = spendDbClient.createSpendSpring(spendJson);
                             context.getStore(NAMESPACE).put(context.getUniqueId(), created);
                         }
                     });

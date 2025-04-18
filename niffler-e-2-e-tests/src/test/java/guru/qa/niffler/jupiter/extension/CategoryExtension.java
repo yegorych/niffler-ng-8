@@ -23,7 +23,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                 .ifPresent(anno -> {
                     if (anno.categories().length > 0) {
                         Category categoryAnno = anno.categories()[0];
-                        CategoryJson category = spendDbClient.createCategory(new CategoryJson(
+                        CategoryJson category = spendDbClient.createCategorySpring(new CategoryJson(
                                 null,
                                 randomCategoryName(),
                                 anno.username(),
@@ -47,7 +47,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
     @Override
     public void afterTestExecution(ExtensionContext context) {
         Optional.ofNullable(context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class))
-                .ifPresent(spendDbClient::deleteCategory);
+                .ifPresent(spendDbClient::deleteCategorySpring);
 
     }
 }
