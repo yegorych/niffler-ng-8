@@ -2,6 +2,7 @@ package guru.qa.niffler.data.dao.impl.jdbc;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthorityDao;
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.Authority;
 
@@ -22,7 +23,7 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
                 "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             for (AuthorityEntity a : authority) {
-                ps.setObject(1, a.getUserId());
+                ps.setObject(1, a.getUser().getId());
                 ps.setString(2, a.getAuthority().name());
                 ps.addBatch();
                 ps.clearParameters();
@@ -44,9 +45,11 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
             try (ResultSet rs = ps.getResultSet()) {
                 while (rs.next()) {
                     AuthorityEntity ae = new AuthorityEntity();
+                    AuthUserEntity user = new AuthUserEntity();
                     ae.setId(rs.getObject("id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
-                    ae.setUserId(rs.getObject("user_id", UUID.class));
+                    user.setId(rs.getObject("user_id", UUID.class));
+                    ae.setUser(user);
                     aeList.add(ae);
                 }
                 return aeList;
@@ -77,9 +80,11 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
             try (ResultSet rs = ps.getResultSet()) {
                 while (rs.next()) {
                     AuthorityEntity ae = new AuthorityEntity();
+                    AuthUserEntity user = new AuthUserEntity();
                     ae.setId(rs.getObject("id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
-                    ae.setUserId(rs.getObject("user_id", UUID.class));
+                    user.setId(rs.getObject("user_id", UUID.class));
+                    ae.setUser(user);
                     aeList.add(ae);
                 }
                 return aeList;
