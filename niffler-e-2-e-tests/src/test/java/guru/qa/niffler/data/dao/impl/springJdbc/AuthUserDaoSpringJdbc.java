@@ -8,7 +8,10 @@ import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.net.PasswordAuthentication;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.UUID;
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
   private static final Config CFG = Config.getInstance();
+  private final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
@@ -30,7 +34,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setString(1, user.getUsername());
-      ps.setString(2, user.getPassword());
+      ps.setString(2, pe.encode(user.getPassword()));
       ps.setBoolean(3, user.getEnabled());
       ps.setBoolean(4, user.getAccountNonExpired());
       ps.setBoolean(5, user.getAccountNonLocked());
