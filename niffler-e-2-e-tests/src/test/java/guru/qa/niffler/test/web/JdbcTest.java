@@ -1,98 +1,105 @@
 package guru.qa.niffler.test.web;
 
-import guru.qa.niffler.model.*;
-import guru.qa.niffler.service.AuthDbClient;
-import guru.qa.niffler.service.SpendDbClient;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-
 public class JdbcTest {
 
-    @Test
-    void txTest() {
-        SpendDbClient spendDbClient = new SpendDbClient();
+    UsersDbClient usersDbClient = new UsersDbClient();
 
-        SpendJson spend = spendDbClient.createSpend(
-                new SpendJson(
+    /*
+    Откат не выполняется только в случае, когда ошибка именно при коммите.
+    В FailingCommitJdbcTransactionManager переопределен метод doCommit, в котором всегда будет исключение
+     */
+    @Test
+    void xaTxWithFailedTxTest() {
+        UserJson user = usersDbClient.createUserWithoutAtomicos(
+                new UserJson(
                         null,
-                        new Date(),
-                        new CategoryJson(
-                                null,
-                                "cat-name-tx-2",
-                                "duck",
-                                false
-                        ),
+                        RandomDataUtils.randomUsername(),
+                        null,
+                        null,
+                        null,
                         CurrencyValues.RUB,
-                        1000.0,
-                        "spend-name-tx",
+                        null,
                         null
                 )
         );
-
-        System.out.println(spend);
+        System.out.println(user);
     }
 
     @Test
-    void successfulTransactionTest() {
-        AuthDbClient authDbClient = new AuthDbClient();
-        authDbClient.createUser(
-                new AuthUserJson(
+    void springJdbcXaTxTest() {
+        String username = RandomDataUtils.randomUsername();
+        UserJson user = usersDbClient.createUserUsingSpringJdbcTx(
+                new UserJson(
                         null,
-                        RandomDataUtils.randomUsername(),
-                        "12345",
-                        true,
-                        true,
-                        true,
-                        true
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
                 )
         );
+        System.out.println(user);
     }
 
-//    @Test
-//    void successfulXaTransactionTest() {
-//        UsersDbClient userDbClient = new UsersDbClient();
-//        String username = RandomDataUtils.randomUsername();
-//        userDbClient.createUserAuthAndUserdata(
-//                new AuthUserJson(
-//                        null,
-//                        username,
-//                        "12345",
-//                        true,
-//                        true,
-//                        true,
-//                        true
-//                ),
-//                new UserJson(
-//                        null,
-//                        username,
-//                        null,
-//                        null,
-//                        null,
-//                        CurrencyValues.RUB,
-//                        null,
-//                        null
-//                )
-//        );
-//    }
+    @Test
+    void springJdbcWithoutTxTest() {
+        String username = RandomDataUtils.randomUsername();
+        UserJson user = usersDbClient.createUserUsingSpringJdbcWithoutTx(
+                new UserJson(
+                        null,
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+        System.out.println(user);
+    }
 
-  @Test
-  void springJdbcTest() {
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUser(
-        new UserJson(
-            null,
-            "valentin-4",
-            null,
-            null,
-            null,
-            CurrencyValues.RUB,
-            null,
-            null
-        )
-    );
-    System.out.println(user);
-  }
+    @Test
+    void simpleJdbcXaTxTest() {
+        String username = RandomDataUtils.randomUsername();
+        UserJson user = usersDbClient.createUserUsingJdbcTx(
+                new UserJson(
+                        null,
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+        System.out.println(user);
+    }
+
+    @Test
+    void simpleJdbcWithoutTxTest() {
+        String username = RandomDataUtils.randomUsername();
+        UserJson user = usersDbClient.createUserUsingJdbcWithoutTx(
+                new UserJson(
+                        null,
+                        username,
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+                )
+        );
+        System.out.println(user);
+    }
 }
