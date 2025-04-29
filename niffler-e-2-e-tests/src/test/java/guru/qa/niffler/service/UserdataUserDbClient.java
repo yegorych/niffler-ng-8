@@ -21,14 +21,24 @@ public class UserdataUserDbClient {
     private static final Config CFG = Config.getInstance();
 
     public UserJson createUser(UserJson user) {
-        return jdbcTxTemplate.execute(() -> UserJson.fromEntity(userdataDao.create(UserEntity.fromJson(user))));
+        return jdbcTxTemplate.execute(() ->
+                UserJson.fromEntity(
+                        userdataDao.create(UserEntity.fromJson(user)),
+                        null
+                )
+        );
     }
 
     public Optional<UserJson> findUserByUsername(String username) {
-        return jdbcTxTemplate.execute(() -> userdataDao.findByUsername(username).map(UserJson::fromEntity));
+        return jdbcTxTemplate.execute(() ->
+                userdataDao.findByUsername(username)
+                        .map(userEntity -> UserJson.fromEntity(userEntity, null)));
     }
+
     public Optional<UserJson> findUserById(UUID id) {
-        return jdbcTxTemplate.execute(() -> userdataDao.findById(id).map(UserJson::fromEntity));
+        return jdbcTxTemplate.execute(() ->
+                userdataDao.findById(id)
+                        .map(userEntity -> UserJson.fromEntity(userEntity, null)));
 
     }
 
