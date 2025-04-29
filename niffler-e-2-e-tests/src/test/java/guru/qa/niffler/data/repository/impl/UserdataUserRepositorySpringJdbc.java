@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.impl.springJdbc.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
@@ -8,12 +9,8 @@ import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,31 +19,16 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
 
     @Override
     public UserEntity create(UserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
-        KeyHolder kh = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO \"user\" (username, currency) VALUES (?, ?)",
-                    Statement.RETURN_GENERATED_KEYS
-            );
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getCurrency().name());
-            return ps;
-        }, kh);
-
-        final UUID generatedKey = (UUID) Objects.requireNonNull(kh.getKeys()).get("id");
-        user.setId(generatedKey);
-        return user;
-
+        return new UdUserDaoSpringJdbc().create(user);
     }
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
         return Optional.ofNullable(jdbcTemplate.query(
-                "SELECT u.*, f.*, f.* " +
+                "SELECT u.*, f.*" +
                         "FROM \"user\" u " +
-                        "JOIN friendship f ON u.id = f.requester_id OR u.id = f.addressee_id " +
+                        "LEFT JOIN friendship f ON u.id = f.requester_id OR u.id = f.addressee_id " +
                         "WHERE u.id = ?",
                 new Object[]{id},
                 rs -> {

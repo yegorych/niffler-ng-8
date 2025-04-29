@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.impl.jdbc.UdUserDaoJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
@@ -22,34 +23,16 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
     @Override
     public UserEntity create(UserEntity user) {
-        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-                "INSERT INTO \"user\" (username, currency) VALUES (?, ?)",
-                PreparedStatement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getCurrency().name());
-            ps.executeUpdate();
-            final UUID generatedUserId;
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedUserId = rs.getObject("id", UUID.class);
-                } else {
-                    throw new IllegalStateException("Can`t find id in ResultSet");
-                }
-            }
-            user.setId(generatedUserId);
-            return user;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return new UdUserDaoJdbc().create(user);
     }
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-                "SELECT u.*, f.*, f.*\n" +
-                        "FROM \"user\" u\n" +
-                        "JOIN friendship f ON u.id = f.requester_id OR u.id = f.addressee_id\n" +
-                        "WHERE u.id = ?;")) {
+                "SELECT u.*, f.*" +
+                        "FROM \"user\" u " +
+                        "LEFT JOIN friendship f ON u.id = f.requester_id OR u.id = f.addressee_id " +
+                        "WHERE u.id = ?")) {
             ps.setObject(1, id);
             ps.execute();
             try (ResultSet rs = ps.getResultSet()) {

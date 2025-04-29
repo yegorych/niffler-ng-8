@@ -1,6 +1,8 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.impl.jdbc.AuthAuthorityDaoJdbc;
+import guru.qa.niffler.data.dao.impl.jdbc.AuthUserDaoJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
@@ -23,41 +25,10 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
-    try (PreparedStatement userPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-        "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
-            "VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
-         PreparedStatement authorityPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
-             "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)")) {
-      userPs.setString(1, user.getUsername());
-      userPs.setString(2, user.getPassword());
-      userPs.setBoolean(3, user.getEnabled());
-      userPs.setBoolean(4, user.getAccountNonExpired());
-      userPs.setBoolean(5, user.getAccountNonLocked());
-      userPs.setBoolean(6, user.getCredentialsNonExpired());
-
-      userPs.executeUpdate();
-
-      final UUID generatedKey;
-      try (ResultSet rs = userPs.getGeneratedKeys()) {
-        if (rs.next()) {
-          generatedKey = rs.getObject("id", UUID.class);
-        } else {
-          throw new SQLException("Can`t find id in ResultSet");
-        }
-      }
-      user.setId(generatedKey);
-
-      for (AuthorityEntity a : user.getAuthorities()) {
-        authorityPs.setObject(1, generatedKey);
-        authorityPs.setString(2, a.getAuthority().name());
-        authorityPs.addBatch();
-        authorityPs.clearParameters();
-      }
-      authorityPs.executeBatch();
+      AuthUserEntity authUser = new AuthUserDaoJdbc().create(user);
+      user.setId(authUser.getId());
+      new AuthAuthorityDaoJdbc().create(user.getAuthorities().toArray(AuthorityEntity[]::new));
       return user;
-    } catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Override

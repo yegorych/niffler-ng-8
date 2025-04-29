@@ -1,6 +1,8 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.impl.springJdbc.AuthAuthorityDaoSpringJdbc;
+import guru.qa.niffler.data.dao.impl.springJdbc.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
@@ -28,42 +30,10 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     private final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
-        KeyHolder kh = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
-                            "VALUES (?,?,?,?,?,?)",
-                    Statement.RETURN_GENERATED_KEYS
-            );
-            ps.setString(1, user.getUsername());
-            ps.setString(2, pe.encode(user.getPassword()));
-            ps.setBoolean(3, user.getEnabled());
-            ps.setBoolean(4, user.getAccountNonExpired());
-            ps.setBoolean(5, user.getAccountNonLocked());
-            ps.setBoolean(6, user.getCredentialsNonExpired());
-            return ps;
-        }, kh);
-
-        final UUID generatedKey = (UUID) kh.getKeys().get("id");
-        user.setId(generatedKey);
-
-        jdbcTemplate.batchUpdate(
-                "INSERT INTO authority (user_id, authority) VALUES (? , ?)",
-                new BatchPreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setObject(1, generatedKey);
-                        ps.setString(2, user.getAuthorities().get(i).getAuthority().name());
-                    }
-
-                    @Override
-                    public int getBatchSize() {
-                        return user.getAuthorities().size();
-                    }
-                }
-        );
-
+        AuthUserEntity aue = new AuthUserDaoSpringJdbc().create(user);
+        user.setId(aue.getId());
+        new AuthAuthorityDaoSpringJdbc().create(
+                user.getAuthorities().toArray(AuthorityEntity[]::new));
         return user;
     }
 
