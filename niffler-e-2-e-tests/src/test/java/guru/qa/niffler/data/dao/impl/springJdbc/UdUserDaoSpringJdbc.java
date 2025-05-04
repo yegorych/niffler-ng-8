@@ -74,4 +74,9 @@ public class UdUserDaoSpringJdbc implements UserdataDao {
             UdUserEntityRowMapper.instance
     );
   }
+
+  @Override
+  public UserEntity update(UserEntity user) {
+    return null;
+  }
 }

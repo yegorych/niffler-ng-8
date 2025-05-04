@@ -50,6 +50,27 @@ public class SpendDaoJdbc implements SpendDao {
   }
 
   @Override
+  public SpendEntity update(SpendEntity spend) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+            "UPDATE spend SET username = ?, spend_date = ?, currency = ?, " +
+                    "amount = ?, description = ?, category_id = ? " +
+                    "WHERE id = ? "
+    )) {
+      ps.setString(1, spend.getUsername());
+      ps.setDate(2, new Date(spend.getSpendDate().getTime()));
+      ps.setString(3, spend.getCurrency().name());
+      ps.setDouble(4, spend.getAmount());
+      ps.setString(5, spend.getDescription());
+      ps.setObject(6, spend.getCategory().getId());
+      ps.setObject(7, spend.getId());
+      ps.executeUpdate();
+      return spend;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
               "SELECT * FROM spend WHERE id = ?")) {
@@ -58,6 +79,21 @@ public class SpendDaoJdbc implements SpendDao {
         try (ResultSet rs = ps.getResultSet()) {
           return rs.next() ? Optional.of(mapResultSetToSpendEntity(rs)) : Optional.empty();
         }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public Optional<SpendEntity> findByUsernameAndDescription(String username, String description) {
+    try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
+            "SELECT * FROM spend WHERE username = ? AND description = ?")) {
+      ps.setObject(1, username);
+      ps.setString(2, description);
+      ps.execute();
+      try (ResultSet rs = ps.getResultSet()) {
+        return rs.next() ? Optional.of(mapResultSetToSpendEntity(rs)) : Optional.empty();
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

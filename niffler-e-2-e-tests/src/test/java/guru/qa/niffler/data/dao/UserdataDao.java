@@ -12,4 +12,5 @@ public interface UserdataDao {
     Optional<UserEntity> findByUsername (String username);
     void delete(UserEntity user);
     List<UserEntity> findAll();
+    UserEntity update(UserEntity user);
 }

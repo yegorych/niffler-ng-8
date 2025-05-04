@@ -19,10 +19,16 @@ public class UdUserDaoJdbc implements UserdataDao {
     @Override
     public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
-                "INSERT INTO \"user\" (username, currency) VALUES (?, ?)",
+                "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getCurrency().name());
+            ps.setString(3, user.getFirstname());
+            ps.setString(4, user.getSurname());
+            ps.setBytes(5, user.getPhoto());
+            ps.setBytes(6, user.getPhotoSmall());
+            ps.setString(7, user.getFullname());
             ps.executeUpdate();
             final UUID generatedUserId;
             try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -33,6 +39,25 @@ public class UdUserDaoJdbc implements UserdataDao {
                 }
             }
             user.setId(generatedUserId);
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UserEntity update(UserEntity user) {
+        try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
+                "UPDATE \"user\" SET username = ?, currency = ?, firstname = ?, surname = ?, photo = ?, " +
+                        "photo_small = ?, full_name = ? WHERE id = ?")) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getCurrency().name());
+            ps.setString(3, user.getFirstname());
+            ps.setString(4, user.getSurname());
+            ps.setBytes(5, user.getPhoto());
+            ps.setBytes(6, user.getPhotoSmall());
+            ps.setString(7, user.getFullname());
+            ps.executeUpdate();
             return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -98,6 +123,8 @@ public class UdUserDaoJdbc implements UserdataDao {
             throw new RuntimeException(e);
         }
     }
+
+
 
     private static UserEntity mapResultSetToUserdataEntity(ResultSet rs) {
         try {

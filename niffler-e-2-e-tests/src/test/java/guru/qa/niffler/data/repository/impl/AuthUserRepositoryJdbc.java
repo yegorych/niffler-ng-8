@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.dao.impl.jdbc.AuthAuthorityDaoJdbc;
 import guru.qa.niffler.data.dao.impl.jdbc.AuthUserDaoJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -22,13 +23,28 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
   private static final Config CFG = Config.getInstance();
+  private final AuthUserDao authUserDao = new AuthUserDaoJdbc();
+  private final AuthAuthorityDaoJdbc authAuthorityDao = new AuthAuthorityDaoJdbc();
 
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
-      AuthUserEntity authUser = new AuthUserDaoJdbc().create(user);
+      AuthUserEntity authUser = authUserDao.create(user);
       user.setId(authUser.getId());
-      new AuthAuthorityDaoJdbc().create(user.getAuthorities().toArray(AuthorityEntity[]::new));
+      authAuthorityDao.create(user.getAuthorities().toArray(AuthorityEntity[]::new));
       return user;
+  }
+
+  @Override
+  public AuthUserEntity update(AuthUserEntity user) {
+      AuthUserEntity authUser = authUserDao.update(user);
+      authAuthorityDao.update(user.getAuthorities().toArray(AuthorityEntity[]::new));
+      return authUser;
+  }
+
+  @Override
+  public void remove(AuthUserEntity user) {
+      authUserDao.delete(user);
+      authAuthorityDao.delete(user.getAuthorities().toArray(AuthorityEntity[]::new));
   }
 
   @Override
@@ -37,9 +53,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         "select * from \"user\" u join authority a on u.id = a.user_id where u.id = ?"
     )) {
       ps.setObject(1, id);
-
       ps.execute();
-
       try (ResultSet rs = ps.getResultSet()) {
         AuthUserEntity user = null;
         List<AuthorityEntity> authorityEntities = new ArrayList<>();
@@ -47,7 +61,6 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
           if (user == null) {
             user = AuthUserEntityRowMapper.instance.mapRow(rs, 1);
           }
-
           AuthorityEntity ae = new AuthorityEntity();
           ae.setUser(user);
           ae.setId(rs.getObject("a.id", UUID.class));
@@ -72,9 +85,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         "select * from \"user\" u join authority a on u.id = a.user_id where u.username = ?"
     )) {
       ps.setString(1, username);
-
       ps.execute();
-
       try (ResultSet rs = ps.getResultSet()) {
         AuthUserEntity user = null;
         List<AuthorityEntity> authorityEntities = new ArrayList<>();
@@ -100,4 +111,6 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
       throw new RuntimeException(e);
     }
   }
+
+
 }

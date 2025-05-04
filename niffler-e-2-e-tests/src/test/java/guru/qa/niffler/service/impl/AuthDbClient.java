@@ -1,15 +1,11 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.dao.AuthorityDao;
 import guru.qa.niffler.data.dao.impl.jdbc.AuthAuthorityDaoJdbc;
 import guru.qa.niffler.data.dao.impl.jdbc.AuthUserDaoJdbc;
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
-import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
-import guru.qa.niffler.model.AuthUserJson;
-import guru.qa.niffler.model.Authority;
 
 
 public class AuthDbClient {

@@ -35,6 +35,23 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
     }
 
     @Override
+    public void update(AuthorityEntity... authority) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "UPDATE \"authority\" SET user_id = ?, authority = ? WHERE id = ?")) {
+            for (AuthorityEntity a : authority) {
+                ps.setObject(1, a.getUser().getId());
+                ps.setString(2, a.getAuthority().name());
+                ps.setObject(3, a.getId());
+                ps.addBatch();
+                ps.clearParameters();
+            }
+            ps.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<AuthorityEntity> findByUserId(UUID id) {
         List<AuthorityEntity> aeList = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -60,11 +77,15 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
     }
 
     @Override
-    public void delete(AuthorityEntity authority) {
+    public void delete(AuthorityEntity... authority) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "DELETE FROM authority WHERE id = ?")) {
-            ps.setObject(1, authority.getId());
-            ps.execute();
+            for (AuthorityEntity ae : authority) {
+                ps.setObject(1, ae.getId());
+                ps.addBatch();
+                ps.clearParameters();
+            }
+            ps.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -93,4 +114,6 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
             throw new RuntimeException(e);
         }
     }
+
+
 }
