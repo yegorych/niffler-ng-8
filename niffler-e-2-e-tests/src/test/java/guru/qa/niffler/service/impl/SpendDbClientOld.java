@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-public class SpendDbClient {
+public class SpendDbClientOld {
   private static final Config CFG = Config.getInstance();
   private final CategoryDao categoryDao = new CategoryDaoJdbc();
   private final SpendDao spendDao = new SpendDaoJdbc();

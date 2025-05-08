@@ -4,7 +4,7 @@ import guru.qa.niffler.jupiter.annotation.Spend;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.service.SpendDbClient;
+import guru.qa.niffler.service.impl.SpendDbClientOld;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
-  private final SpendDbClient spendDbClient = new SpendDbClient();
+  private final SpendDbClientOld spendDbClientOld = new SpendDbClientOld();
 
   @Override
   public void beforeEach(ExtensionContext context) {
@@ -22,10 +22,10 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                     .ifPresent(annotation -> {
                         if (annotation.spendings().length > 0) {
                             Spend spend = annotation.spendings()[0];
-                            Optional<CategoryJson> cj = spendDbClient.findCategoryByUsernameAndCategoryName(annotation.username(), spend.category());
+                            Optional<CategoryJson> cj = spendDbClientOld.findCategoryByUsernameAndCategoryName(annotation.username(), spend.category());
                             CategoryJson categoryJson = new CategoryJson(null, spend.category(), annotation.username(), false);
 
-                            categoryJson = cj.isPresent() ? cj.get() : spendDbClient.createCategorySpring(categoryJson);
+                            categoryJson = cj.isPresent() ? cj.get() : spendDbClientOld.createCategorySpring(categoryJson);
                             SpendJson spendJson = new SpendJson(
                                     null,
                                     new Date(),
@@ -35,7 +35,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
                                     spend.description(),
                                     annotation.username()
                             );
-                            SpendJson created = spendDbClient.createSpendSpring(spendJson);
+                            SpendJson created = spendDbClientOld.createSpendSpring(spendJson);
                             context.getStore(NAMESPACE).put(context.getUniqueId(), created);
                         }
                     });

@@ -16,7 +16,6 @@ import static guru.qa.niffler.data.tpl.Connections.holder;
 
 public class AuthUserDaoJdbc implements AuthUserDao {
 
-    private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private static final Config CFG = Config.getInstance();
 
     @Override
@@ -25,7 +24,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
                         "VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getUsername());
-            ps.setString(2, pe.encode(user.getPassword()));
+            ps.setString(2, user.getPassword());
             ps.setBoolean(3, user.getEnabled());
             ps.setBoolean(4, user.getAccountNonExpired());
             ps.setBoolean(5, user.getAccountNonLocked());
@@ -42,6 +41,27 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 }
             }
             user.setId(generatedKey);
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "UPDATE \"user\" " +
+                        "SET username = ?, password = ?, enabled = ?, " +
+                        "account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ? " +
+                        "WHERE id = ?")) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setBoolean(3, user.getEnabled());
+            ps.setBoolean(4, user.getAccountNonExpired());
+            ps.setBoolean(5, user.getAccountNonLocked());
+            ps.setBoolean(6, user.getCredentialsNonExpired());
+            ps.setObject(7, user.getId());
+            ps.executeUpdate();
             return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);

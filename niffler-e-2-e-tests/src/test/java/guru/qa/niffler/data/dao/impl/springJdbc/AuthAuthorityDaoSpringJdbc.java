@@ -16,27 +16,49 @@ import java.util.UUID;
 
 public class AuthAuthorityDaoSpringJdbc implements AuthorityDao {
 
-  private static final Config CFG = Config.getInstance();
+    private static final Config CFG = Config.getInstance();
 
-  @Override
-  public void create(AuthorityEntity... authority) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
-    jdbcTemplate.batchUpdate(
-        "INSERT INTO authority (user_id, authority) VALUES (? , ?)",
-        new BatchPreparedStatementSetter() {
-          @Override
-          public void setValues(PreparedStatement ps, int i) throws SQLException {
-            ps.setObject(1, authority[i].getUser().getId());
-            ps.setString(2, authority[i].getAuthority().name());
-          }
+    @Override
+    public void create(AuthorityEntity... authority) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.batchUpdate(
+                "INSERT INTO authority (user_id, authority) VALUES (? , ?)",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setObject(1, authority[i].getUser().getId());
+                        ps.setString(2, authority[i].getAuthority().name());
+                    }
 
-          @Override
-          public int getBatchSize() {
-            return authority.length;
-          }
-        }
-    );
-  }
+                    @Override
+                    public int getBatchSize() {
+                        return authority.length;
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void update(AuthorityEntity... authority) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.batchUpdate(
+                "UPDATE \"authority\" SET user_id = ?, authority = ? WHERE id = ?",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setObject(1, authority[i].getUser().getId());
+                        ps.setString(2, authority[i].getAuthority().name());
+                        ps.setObject(3, authority[i].getId());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return authority.length;
+                    }
+                }
+        );
+    }
+
 
     @Override
     public List<AuthorityEntity> findByUserId(UUID id) {
@@ -44,8 +66,22 @@ public class AuthAuthorityDaoSpringJdbc implements AuthorityDao {
     }
 
     @Override
-    public void delete(AuthorityEntity authority) {
+    public void delete(AuthorityEntity... authority) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.batchUpdate(
+                "DELETE FROM \"authority\" WHERE id = ?",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setObject(3, authority[i].getId());
+                    }
 
+                    @Override
+                    public int getBatchSize() {
+                        return authority.length;
+                    }
+                }
+        );
     }
 
     @Override
@@ -64,4 +100,6 @@ public class AuthAuthorityDaoSpringJdbc implements AuthorityDao {
                 }
         );
     }
+
+
 }
