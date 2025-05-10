@@ -27,7 +27,7 @@ public class JdbcTest {
     @ParameterizedTest
     @MethodSource("spendRepositoryProvider")
     void spendDbClientTest(SpendRepository repository) {
-        SpendDbClient spendDbClient = new SpendDbClient(repository);
+        SpendDbClient spendDbClient = new SpendDbClient();
         SpendJson spend = spendDbClient.createSpend(
                 new SpendJson(
                         null,
@@ -73,7 +73,7 @@ public class JdbcTest {
     @ParameterizedTest
     @MethodSource("userdataAndAuthRepositoryProvider")
     void usersDbClientTest(UserdataUserRepository udRepository, AuthUserRepository authRepository) {
-        UsersDbClient usersDbClient = new UsersDbClient(udRepository, authRepository);
+        UsersDbClient usersDbClient = new UsersDbClient();
         String username = randomUsername();
         UserJson user = usersDbClient.createUser(username, "12345");
         usersDbClient.createFriends(user, 1);

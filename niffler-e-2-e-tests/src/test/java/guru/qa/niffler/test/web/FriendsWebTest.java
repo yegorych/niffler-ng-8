@@ -2,14 +2,13 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.Friendship;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
-import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
-
+import guru.qa.niffler.model.FriendshipStatus;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 
 @WebTest
@@ -17,19 +16,25 @@ public class FriendsWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
+    @User(friendships = @Friendship(
+            count = 1,
+            status = FriendshipStatus.FRIEND
+    ))
+    void friendShouldBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.password())
+                .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
                 .goToFriendPage()
-                .assertHasFriend(user.friend());
+                .assertHasFriends(user.testData().friends().stream().map(UserJson::username).toList());
     }
 
+
     @Test
-    void friendsTableShouldBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
+    @User
+    void friendsTableShouldBeEmptyForNewUser(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.password())
+                .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
                 .goToFriendPage()
@@ -37,23 +42,31 @@ public class FriendsWebTest {
     }
 
     @Test
-    void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
+    @User(friendships = @Friendship(
+            count = 3,
+            status = FriendshipStatus.INVITE_SENT
+    ))
+    void incomeInvitationBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.password())
+                .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
                 .goToFriendPage()
-                .assertHasRequest(user.income());
+                .assertHasRequests(user.testData().friendshipAddressees().stream().map(UserJson::username).toList());
     }
 
     @Test
-    void outcomeInvitationBePresentInAllPeoplesTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
+    @User(friendships = @Friendship(
+            count = 3,
+            status = FriendshipStatus.INVITE_RECEIVED
+    ))
+    void outcomeInvitationBePresentInAllPeoplesTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.password())
+                .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
                 .goToPeoplePage()
-                .assertHasInvitationRequest(user.outcome());
+                .assertHasInvitationRequests(user.testData().friendshipRequests().stream().map(UserJson::username).toList());
     }
 
 

@@ -2,7 +2,9 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +39,10 @@ public class RegistrationTest {
     }
 
     @Test
-    void shouldNotRegisterUserWithExistingUsername() {
-        String username = "duck";
-        String password = "12345";
+    @User
+    void shouldNotRegisterUserWithExistingUsername(UserJson user) {
+        String username = user.username();
+        String password = user.testData().password();
         registerPage
                 .setUsername(username)
                 .setPassword(password)

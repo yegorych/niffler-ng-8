@@ -15,12 +15,15 @@ public class MainPage {
   private final ElementsCollection tableRows = $$("#spendings tbody tr");
   private final SelenideElement statistics = $("#stat");
   private final SelenideElement historySpending = $("#spendings");
+  private final static SelenideElement searchClearButton = $("#input-clear");
+  private final static SelenideElement searchInput = $("input[type='text']");
   @Getter
   Header header = new Header();
 
 
 
   public EditSpendingPage editSpending(String spendingDescription) {
+    findSpend(spendingDescription);
     tableRows.find(text(spendingDescription))
         .$$("td")
         .get(5)
@@ -29,9 +32,11 @@ public class MainPage {
   }
 
   public void checkThatTableContains(String spendingDescription) {
+    findSpend(spendingDescription);
     tableRows.find(text(spendingDescription))
         .should(visible);
   }
+
 
   public MainPage assertStatisticsIsVisible() {
     statistics.should(visible);
@@ -41,6 +46,14 @@ public class MainPage {
   public MainPage assertHistorySpendingIsVisible() {
     historySpending.should(visible);
     return this;
+  }
+
+  private void findSpend(String spendingDescription) {
+    if (searchClearButton.has(visible)){
+      searchClearButton.click();
+    }
+    searchInput.sendKeys(spendingDescription);
+    searchInput.pressEnter();
   }
 
 
