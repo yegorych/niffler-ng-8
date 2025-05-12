@@ -9,6 +9,7 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
@@ -18,22 +19,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class SpendingTest {
 
   private static final Config CFG = Config.getInstance();
-  private final String username = "yegor";
-  private final String password = "12345";
 
-  @User(username = username,
-          spendings = @Spend(
+  @User(spendings = @Spend(
           category = "Обучение",
           description = "Обучение Niffler 2.0",
           amount = 89000.00,
           currency = CurrencyValues.RUB
   ))
   @Test
-  void spendingDescriptionShouldBeUpdatedByTableAction(SpendJson spend) {
+  void spendingDescriptionShouldBeUpdatedByTableAction(UserJson user) {
     final String newDescription = "Обучение Niffler NG";
-
+    SpendJson spend = user.testData().spendings().getFirst();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .doLogin(username, password)
+        .doLogin(user.username(), user.testData().password())
         .editSpending(spend.description())
         .editDescription(newDescription);
 

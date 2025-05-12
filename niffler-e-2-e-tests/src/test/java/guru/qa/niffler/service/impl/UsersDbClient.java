@@ -11,6 +11,7 @@ import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -26,10 +27,8 @@ public class UsersDbClient implements UsersClient {
   private static final Config CFG = Config.getInstance();
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-//  private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
-//  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
-  private final UserdataUserRepository userdataUserRepository;
-    private final AuthUserRepository authUserRepository;
+  private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
+  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
 
 
   private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
@@ -37,10 +36,6 @@ public class UsersDbClient implements UsersClient {
       CFG.userdataJdbcUrl()
   );
 
-    public UsersDbClient(UserdataUserRepository userdataUserRepository, AuthUserRepository authUserRepository) {
-        this.userdataUserRepository = userdataUserRepository;
-        this.authUserRepository = authUserRepository;
-    }
 
     public UserJson createUser(String username, String password) {
     return xaTransactionTemplate.execute(() -> {
@@ -68,6 +63,7 @@ public class UsersDbClient implements UsersClient {
                             authUserRepository.create(authUser);
                             UserEntity addressee = userdataUserRepository.create(userEntity(username));
                             userdataUserRepository.addFriend(targetEntity, addressee);
+                            targetUser.testData().friends().add(UserJson.fromEntity(addressee, FriendshipStatus.FRIEND));
                             return null;
                         }
                 );
@@ -88,6 +84,7 @@ public class UsersDbClient implements UsersClient {
               authUserRepository.create(authUser);
               UserEntity addressee = userdataUserRepository.create(userEntity(username));
               userdataUserRepository.sendInvitation(targetEntity, addressee);
+              targetUser.testData().friendshipRequests().add(UserJson.fromEntity(addressee, FriendshipStatus.INVITE_RECEIVED));
               return null;
             }
         );
@@ -106,8 +103,9 @@ public class UsersDbClient implements UsersClient {
               String username = randomUsername();
               AuthUserEntity authUser = authUserEntity(username, "12345");
               authUserRepository.create(authUser);
-              UserEntity adressee = userdataUserRepository.create(userEntity(username));
-              userdataUserRepository.sendInvitation(adressee, targetEntity);
+              UserEntity addressee = userdataUserRepository.create(userEntity(username));
+              userdataUserRepository.sendInvitation(addressee, targetEntity);
+              targetUser.testData().friendshipAddressees().add(UserJson.fromEntity(addressee, FriendshipStatus.INVITE_SENT));
               return null;
             }
         );
