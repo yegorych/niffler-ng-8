@@ -17,7 +17,11 @@ public @interface User {
     Category[] categories() default {};
     Spend[] spendings() default {};
     String username() default "";
-    Friendship[] friendships() default {};
+    //Friendship[] friendships() default {};
+    int friends() default 0;
+    int outcomeInvitations() default 0;
+    int incomeInvitations() default 0;
+
 
 
 }

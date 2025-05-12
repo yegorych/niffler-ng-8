@@ -25,15 +25,10 @@ public class FriendPage {
         return new PeoplePage();
     }
 
-    public FriendPage assertHasFriend(String username) {
-        findFriend(username);
-        friends.findBy(text(username)).should(visible);
-        return this;
-    }
-
-    public FriendPage assertHasFriends(List<String> usernames) {
+    public FriendPage assertHasFriends(String... usernames) {
         for (String username : usernames) {
-            assertHasFriend(username);
+            findFriend(username);
+            friends.findBy(text(username)).should(visible);
         }
         return this;
     }
@@ -43,9 +38,11 @@ public class FriendPage {
         return this;
     }
 
-    public FriendPage assertHasRequest(String username) {
-        findFriend(username);
-        requests.findBy(text(username)).should(visible);
+    public FriendPage assertHasRequests(String... usernames) {
+        for (String username : usernames) {
+            findFriend(username);
+            requests.findBy(text(username)).should(visible);
+        }
         return this;
     }
 
@@ -57,12 +54,6 @@ public class FriendPage {
         searchInput.pressEnter();
     }
 
-    public FriendPage assertHasRequests(List<String> usernames) {
-        for (String username : usernames) {
-            assertHasRequest(username);
-        }
-        return this;
-    }
 
     public FriendPage assertHasNoRequests() {
         requests.should(CollectionCondition.empty);

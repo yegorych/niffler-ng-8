@@ -21,11 +21,7 @@ public class PeoplePage {
     private final static SelenideElement searchClearButton = $("#input-clear");
     private final static SelenideElement searchInput = $("input[type='text']");
 
-    public PeoplePage assertHasInvitationRequest(String username) {
-        findPeople(username);
-        invitationRequests.find(text(username)).should(Condition.visible);
-        return this;
-    }
+
 
     private void findPeople(String username) {
         if (searchClearButton.has(visible)){
@@ -35,9 +31,10 @@ public class PeoplePage {
         searchInput.pressEnter();
     }
 
-    public PeoplePage assertHasInvitationRequests(List<String> usernames) {
+    public PeoplePage assertHasInvitationRequests(String... usernames) {
         for (String username : usernames) {
-            assertHasInvitationRequest(username);
+            findPeople(username);
+            invitationRequests.find(text(username)).should(Condition.visible);
         }
         return this;
     }

@@ -16,17 +16,19 @@ public class FriendsWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    @User(friendships = @Friendship(
-            count = 1,
-            status = FriendshipStatus.FRIEND
-    ))
+    @User(friends = 3)
     void friendShouldBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
                 .goToFriendPage()
-                .assertHasFriends(user.testData().friends().stream().map(UserJson::username).toList());
+                .assertHasFriends(
+                        user.testData().friends()
+                                .stream()
+                                .map(UserJson::username)
+                                .toArray(String[]::new)
+                );
     }
 
 
@@ -42,31 +44,35 @@ public class FriendsWebTest {
     }
 
     @Test
-    @User(friendships = @Friendship(
-            count = 3,
-            status = FriendshipStatus.INVITE_SENT
-    ))
+    @User(incomeInvitations = 1)
     void incomeInvitationBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
                 .goToFriendPage()
-                .assertHasRequests(user.testData().friendshipAddressees().stream().map(UserJson::username).toList());
+                .assertHasRequests(
+                        user.testData().friendshipAddressees()
+                                .stream()
+                                .map(UserJson::username)
+                                .toArray(String[]::new)
+                );
     }
 
     @Test
-    @User(friendships = @Friendship(
-            count = 3,
-            status = FriendshipStatus.INVITE_RECEIVED
-    ))
+    @User(outcomeInvitations = 1)
     void outcomeInvitationBePresentInAllPeoplesTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
                 .goToPeoplePage()
-                .assertHasInvitationRequests(user.testData().friendshipRequests().stream().map(UserJson::username).toList());
+                .assertHasInvitationRequests(
+                        user.testData().friendshipRequests()
+                                .stream()
+                                .map(UserJson::username)
+                                .toArray(String[]::new)
+                );
     }
 
 

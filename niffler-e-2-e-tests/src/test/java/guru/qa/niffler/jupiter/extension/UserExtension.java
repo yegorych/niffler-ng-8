@@ -5,7 +5,6 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
-import org.apache.commons.lang.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
@@ -25,18 +24,18 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                     if ("".equals(anno.username())){
                         final String username = randomUsername();
                         UserJson user = usersClient.createUser(username, defaultPassword);
-
-                        if (ArrayUtils.isNotEmpty(anno.friendships())){
-                            for (Friendship friendship : anno.friendships()){
-                                int count = friendship.count();
-                                switch (friendship.status()){
-                                    case FRIEND -> usersClient.createFriends(user, count);
-                                    case INVITE_RECEIVED -> usersClient.createIncomeInvitations(user, count);
-                                    case INVITE_SENT -> usersClient.createOutcomeInvitations(user, count);
-                                    default -> {}
-                                }
-                            }
-                        }
+                        usersClient.createFriends(user, anno.friends());
+                        usersClient.createIncomeInvitations(user, anno.incomeInvitations());
+                        usersClient.createOutcomeInvitations(user, anno.outcomeInvitations());
+//                        for (Friendship friendship : anno.friendships()){
+//                            int count = friendship.count();
+//                            switch (friendship.status()){
+//                                case FRIEND -> usersClient.createFriends(user, count);
+//                                case INVITE_RECEIVED -> usersClient.createIncomeInvitations(user, count);
+//                                case INVITE_SENT -> usersClient.createOutcomeInvitations(user, count);
+//                                default -> {}
+//                            }
+//                        }
                         context.getStore(NAMESPACE).put(context.getUniqueId(), user.withPassword(defaultPassword));
                     }
                 });
@@ -58,7 +57,3 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
     }
 
 }
-
-
-
-
