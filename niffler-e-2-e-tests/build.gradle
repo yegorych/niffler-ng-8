@@ -1,7 +1,7 @@
 buildscript {
     ext {
         junitVersion = '5.11.4'
-        allureVersion = '2.29.1'
+        allureVersion = '2.29.0'
         selenideVersion = '7.7.1'
         okhttp3Version = '3.14.9'
         retrofitVersion = '2.11.0'
@@ -19,6 +19,7 @@ buildscript {
         atomicosVersion = '6.0.0'
         wiremockVersion = '3.0.1'
         fakerVersion = '1.0.2'
+        ashotVersion = '1.5.4'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://127.0.0.1:8089/ws/userdata.wsdl"
@@ -63,6 +64,7 @@ sourceSets {
 }
 
 dependencies {
+    implementation 'ru.yandex.qatools.ashot:ashot:1.5.4'
     // Logs
     testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
     testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
@@ -88,6 +90,7 @@ dependencies {
     testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
     // Allure
+    //testImplementation "io.qameta.allure:allure-commandline:2.30.0"
     testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
     testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {
         exclude group: "org.junit.jupiter"
