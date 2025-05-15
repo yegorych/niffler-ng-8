@@ -1,8 +1,7 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spend;
@@ -15,15 +14,12 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebElement;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static com.codeborne.selenide.Condition.appear;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.executeJavaScript;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
@@ -62,8 +58,75 @@ public class SpendingTest {
   void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password());
-    Thread.sleep(3000);
+    Thread.sleep(1000);
 
+    BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
+    assertFalse(new ScreenDiffResult(
+            expected,
+            actual
+    ));
+  }
+
+
+  @User
+  @ScreenShotTest(value = "img/expected-avatar.png", rewriteExpected = true)
+  void avatarDisplayTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .doLogin(user.username(), user.testData().password())
+            .getHeader()
+            .openMenu()
+            .goToProfilePage()
+            .uploadPicture("img/avatar.png");
+    Thread.sleep(2000);
+    BufferedImage actual = ImageIO.read($("header .MuiAvatar-root").screenshot());
+    assertFalse(new ScreenDiffResult(
+            expected,
+            actual
+    ));
+  }
+
+  @User(
+          spendings = @Spend(
+                  category = "Обучение",
+                  description = "Обучение 1",
+                  amount = 5000,
+                  currency = CurrencyValues.RUB
+          )
+  )
+  @ScreenShotTest(value = "img/expected-delete-stat.png", rewriteExpected = true)
+  void deleteStatComponentTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
+    SpendJson spend = user.testData().spendings().getFirst();
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .doLogin(user.username(), user.testData().password())
+            .deleteSpending(spend.description())
+            .assertStatisticsRowIsNotVisible(spend.getStatisticsRowName());
+    Thread.sleep(2000);
+    BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
+    assertFalse(new ScreenDiffResult(
+            expected,
+            actual
+    ));
+  }
+
+  @User(
+          spendings = @Spend(
+                  category = "Обучение",
+                  description = "Обучение 1",
+                  amount = 5000,
+                  currency = CurrencyValues.RUB
+          )
+  )
+  @ScreenShotTest(value = "img/expected-edit-stat.png", rewriteExpected = true)
+  void editStatComponentTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
+    SpendJson spend = user.testData().spendings().getFirst();
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .doLogin(user.username(), user.testData().password())
+            .editSpending(spend.description())
+            .editAmount("2000")
+            .submit()
+            .assertStatisticsRowIsNotVisible(spend.getStatisticsRowName());
+
+    Thread.sleep(3000);
     BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
     assertFalse(new ScreenDiffResult(
             expected,

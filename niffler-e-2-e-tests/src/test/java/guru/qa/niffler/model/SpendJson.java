@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -41,5 +42,14 @@ public record SpendJson(
             entity.getDescription(),
             username
         );
+    }
+
+    public String getStatisticsRowName(){
+        String categoryName = category.archived() ? "Archived" : category().name();
+        String amountStr = amount() % 1 == 0
+                ? String.format("%.0f", amount())
+                : new DecimalFormat("#.##").format(amount());;
+        String currencyStr = currency().getSymbol();
+        return String.join(" ", categoryName, amountStr, currencyStr);
     }
 }

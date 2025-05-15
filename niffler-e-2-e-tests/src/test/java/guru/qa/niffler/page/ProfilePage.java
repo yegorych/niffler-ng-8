@@ -6,6 +6,8 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import lombok.Getter;
 
+import java.io.File;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
@@ -20,6 +22,8 @@ public class ProfilePage {
     private final SelenideElement categoryArchivingMessage = $(".MuiAlert-message");
     private final String archiveCategoryBtnLocator = "button[aria-label='Archive category";
     private final String unarchiveCategoryBtnLocator = "button[aria-label='Unarchive category";
+    private final SelenideElement uploadPictureInput = $("input[type='file']");
+    private final SelenideElement saveChangesButton = $("[type='submit']");
     @Getter
     Header header = new Header();
 
@@ -68,6 +72,12 @@ public class ProfilePage {
     public void assertCategoryIsUnarchived(String categoryName) {
         assertAlertMessage("Category %s is unarchived".formatted(categoryName));
         categories.findBy(text(categoryName)).should(visible);
+    }
+
+    public ProfilePage uploadPicture(String pathToImage) {
+        uploadPictureInput.uploadFromClasspath(pathToImage);
+        saveChangesButton.click();
+        return this;
     }
 
     private void assertAlertMessage(String message) {
