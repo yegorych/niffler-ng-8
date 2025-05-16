@@ -16,10 +16,10 @@ import static com.codeborne.selenide.Selenide.$$;
 public class PeoplePage {
     @Getter
     Header header = new Header();
-    private static final ElementsCollection people = $$("#all tr");
-    private static final ElementsCollection invitationRequests = people.exclude(Condition.tagName("button"));
-    private final static SelenideElement searchClearButton = $("#input-clear");
-    private final static SelenideElement searchInput = $("input[type='text']");
+    private final ElementsCollection people = $$("#all tr");
+    private final ElementsCollection invitationRequests = people.exclude(Condition.tagName("button"));
+    private final SelenideElement searchClearButton = $("#input-clear");
+    private final SelenideElement searchInput = $("input[type='text']");
 
 
 

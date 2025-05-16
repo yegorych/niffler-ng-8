@@ -4,13 +4,21 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import lombok.Getter;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ProfilePage {
     private final ElementsCollection categories = $$(".MuiChip-label");
@@ -20,6 +28,9 @@ public class ProfilePage {
     private final SelenideElement categoryArchivingMessage = $(".MuiAlert-message");
     private final String archiveCategoryBtnLocator = "button[aria-label='Archive category";
     private final String unarchiveCategoryBtnLocator = "button[aria-label='Unarchive category";
+    private final SelenideElement uploadPictureInput = $("input[type='file']");
+    private final SelenideElement saveChangesButton = $("[type='submit']");
+
     @Getter
     Header header = new Header();
 
@@ -70,10 +81,26 @@ public class ProfilePage {
         categories.findBy(text(categoryName)).should(visible);
     }
 
+    public ProfilePage uploadPicture(String pathToImage) {
+        uploadPictureInput.uploadFromClasspath(pathToImage);
+        saveChangesButton.click();
+        return this;
+    }
+
     private void assertAlertMessage(String message) {
         categoryArchivingMessage
                 .should(Condition.appear)
                 .should(text(message));
+    }
+
+    public ProfilePage assertProfilePhotoScreen(BufferedImage expectedImage) throws IOException, InterruptedException {
+        Thread.sleep(3000);
+        BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(header.getProfilePhoto().screenshot()));
+        assertFalse(new ScreenDiffResult(
+                expectedImage,
+                actualImage
+        ));
+        return this;
     }
 
 
