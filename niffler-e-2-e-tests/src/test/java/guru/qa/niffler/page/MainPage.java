@@ -3,13 +3,20 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import lombok.Getter;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MainPage {
   @Getter
@@ -22,6 +29,8 @@ public class MainPage {
   private final SelenideElement deleteButton = $("#delete");
   private final SelenideElement dialogDeleteButton = $$("div[role='dialog'] [type='button']").find(text("Delete"));
   private final ElementsCollection statisticsRows = $$("ul li");
+  private final SelenideElement statisticsDiagram = $("canvas[role='img']");
+
 
   public EditSpendingPage editSpending(String spendingDescription) {
     findSpend(spendingDescription);
@@ -75,6 +84,16 @@ public class MainPage {
     return this;
   }
 
+  public MainPage asserStatisticsDiagram(BufferedImage expectedImage) throws IOException, InterruptedException {
+    Thread.sleep(3000);
+    BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(statisticsDiagram.screenshot()));
+    assertFalse(new ScreenDiffResult(
+            expectedImage,
+            actualImage
+    ));
+    return this;
+  }
+
   private void findSpend(String spendingDescription) {
     if (searchClearButton.has(visible)){
       searchClearButton.click();
@@ -86,6 +105,8 @@ public class MainPage {
   private SelenideElement findStatisticsRow(String statisticsRowName) {
     return statisticsRows.find(text(statisticsRowName));
   }
+
+
 
 
 

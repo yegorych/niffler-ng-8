@@ -31,7 +31,6 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     @SneakyThrows
     @Override
     public BufferedImage resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-  //      return ImageIO.read(new ClassPathResource("img/expected-avatar.png").getInputStream());
         return ImageIO.read(
                 new ClassPathResource(
                         AnnotationSupport.findAnnotation(
