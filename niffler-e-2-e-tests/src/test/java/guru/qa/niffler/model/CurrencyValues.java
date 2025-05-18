@@ -15,4 +15,13 @@ public enum CurrencyValues {
   public String getSymbol() {
     return symbol;
   }
+
+  public static CurrencyValues fromSymbol(String symbol) {
+    for (CurrencyValues value : CurrencyValues.values()) {
+      if (value.getSymbol().equals(symbol)) {
+        return value;
+      }
+    }
+    throw new IllegalArgumentException("Unknown currency symbol: " + symbol);
+  }
 }

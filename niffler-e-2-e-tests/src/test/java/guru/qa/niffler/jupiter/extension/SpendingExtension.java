@@ -6,7 +6,6 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.impl.SpendApiClient;
 import guru.qa.niffler.service.impl.SpendDbClient;
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
