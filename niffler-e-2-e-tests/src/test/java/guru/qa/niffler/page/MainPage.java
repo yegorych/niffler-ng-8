@@ -1,25 +1,21 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebElementsCondition;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.StatComponent;
-import guru.qa.niffler.utils.ScreenDiffResult;
 import lombok.Getter;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static guru.qa.niffler.condition.SpendConditions.spend;
 
-public class MainPage {
+public class MainPage extends BasePage<MainPage> {
   @Getter
   private final Header header = new Header();
   private final ElementsCollection tableRows = $$("#spendings tbody tr");
@@ -29,8 +25,6 @@ public class MainPage {
   private final SelenideElement searchInput = $("input[type='text']");
   private final SelenideElement deleteButton = $("#delete");
   private final SelenideElement dialogDeleteButton = $$("div[role='dialog'] [type='button']").find(text("Delete"));
-  private final ElementsCollection statisticsRows = $$("ul li");
-  private final SelenideElement statisticsDiagram = $("canvas[role='img']");
   @Getter
   private final StatComponent statComponent = new StatComponent();
 
@@ -77,23 +71,8 @@ public class MainPage {
     return this;
   }
 
-  public MainPage assertStatisticsRowIsVisible(String statisticsRowName){
-    findStatisticsRow(statisticsRowName).should(visible);
-    return this;
-  }
-
-  public MainPage assertStatisticsRowIsNotVisible(String statisticsRowName){
-    findStatisticsRow(statisticsRowName).shouldNotBe(visible);
-    return this;
-  }
-
-  public MainPage asserStatisticsDiagram(BufferedImage expectedImage) throws IOException, InterruptedException {
-    Thread.sleep(3000);
-    BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(statisticsDiagram.screenshot()));
-    assertFalse(new ScreenDiffResult(
-            expectedImage,
-            actualImage
-    ));
+  public MainPage assertSpending(SpendJson... spendings) {
+    tableRows.should(spend(spendings));
     return this;
   }
 
@@ -105,13 +84,11 @@ public class MainPage {
     searchInput.pressEnter();
   }
 
-  private SelenideElement findStatisticsRow(String statisticsRowName) {
-    return statisticsRows.find(text(statisticsRowName));
+
+  @Override
+  public MainPage checkThatPageLoaded() {
+    statistics.should(visible);
+    historySpending.should(visible);
+    return this;
   }
-
-
-
-
-
-
 }
