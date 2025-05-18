@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spend;
@@ -65,7 +66,7 @@ public class SpendingTest {
             .openMenu()
             .goToProfilePage()
             .uploadPicture("img/avatar.png")
-            .assertProfilePhotoScreen(expected);
+            .assertProfileAvatar(expected);
   }
 
   @User(
@@ -94,7 +95,7 @@ public class SpendingTest {
                   currency = CurrencyValues.RUB
           )
   )
-  @ScreenShotTest(value = "img/expected-edit-stat.png", rewriteExpected = true)
+  @ScreenShotTest(value = "img/expected-edit-stat.png")
   void editStatComponentTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
     SpendJson spend = user.testData().spendings().getFirst();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -102,8 +103,10 @@ public class SpendingTest {
             .editSpending(spend.description())
             .editAmount("2000")
             .submit()
-            .assertStatisticsRowIsNotVisible(spend.getStatisticsRowName())
-            .asserStatisticsDiagram(expected);
+            .getStatComponent()
+            .checkStatisticImage(expected)
+            .checkStatisticBubblesContains(spend.getStatisticsRowName())
+            .checkBubbles(Color.green);
   }
 
 }

@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
+import guru.qa.niffler.page.component.StatComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import lombok.Getter;
 
@@ -30,6 +31,8 @@ public class MainPage {
   private final SelenideElement dialogDeleteButton = $$("div[role='dialog'] [type='button']").find(text("Delete"));
   private final ElementsCollection statisticsRows = $$("ul li");
   private final SelenideElement statisticsDiagram = $("canvas[role='img']");
+  @Getter
+  private final StatComponent statComponent = new StatComponent();
 
 
   public EditSpendingPage editSpending(String spendingDescription) {
@@ -105,6 +108,7 @@ public class MainPage {
   private SelenideElement findStatisticsRow(String statisticsRowName) {
     return statisticsRows.find(text(statisticsRowName));
   }
+
 
 
 
