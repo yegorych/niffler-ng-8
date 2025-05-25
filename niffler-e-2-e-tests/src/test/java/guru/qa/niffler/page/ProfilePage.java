@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.utils.ScreenDiffResult;
@@ -9,7 +10,6 @@ import lombok.Getter;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -18,6 +18,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static guru.qa.niffler.jupiter.extension.ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ProfilePage {
@@ -30,6 +31,7 @@ public class ProfilePage {
     private final String unarchiveCategoryBtnLocator = "button[aria-label='Unarchive category";
     private final SelenideElement uploadPictureInput = $("input[type='file']");
     private final SelenideElement saveChangesButton = $("[type='submit']");
+    private final SelenideElement avatar = $("#image__input").parent().$("img");
 
     @Getter
     Header header = new Header();
@@ -93,13 +95,14 @@ public class ProfilePage {
                 .should(text(message));
     }
 
-    public ProfilePage assertProfilePhotoScreen(BufferedImage expectedImage) throws IOException, InterruptedException {
-        Thread.sleep(3000);
-        BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(header.getProfilePhoto().screenshot()));
+    public ProfilePage assertProfileAvatar(BufferedImage expectedImage) throws IOException {
+        Selenide.sleep(1000);
+        BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
         assertFalse(new ScreenDiffResult(
                 expectedImage,
                 actualImage
-        ));
+        ),
+            ASSERT_SCREEN_MESSAGE);
         return this;
     }
 

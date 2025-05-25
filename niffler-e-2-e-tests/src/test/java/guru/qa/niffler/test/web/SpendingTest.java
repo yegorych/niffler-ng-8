@@ -1,11 +1,13 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spend;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.Bubble;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 
 
 @WebTest
@@ -41,18 +44,31 @@ public class SpendingTest {
   }
 
   @User(
-          spendings = @Spend(
-                  category = "Обучение",
-                  description = "Обучение Advanced 2.0",
-                  amount = 79990,
-                  currency = CurrencyValues.RUB
-          )
+          spendings = {
+                  @Spend(
+                          category = "Обучение",
+                          description = "Курс",
+                          amount = 200
+                  ),
+                  @Spend(
+                          category = "Продукты",
+                          description = "Мясо",
+                          amount = 300
+                  )
+          }
   )
-  @ScreenShotTest("img/expected-stat.png")
-  void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
+  @ScreenShotTest(value = "img/expected-stat.png", rewriteExpected = true)
+  void checkStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
+    List<SpendJson> spendings = user.testData().spendings();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
-            .asserStatisticsDiagram(expected);
+            .checkThatPageLoaded()
+            .assertSpending(spendings.toArray(SpendJson[]::new))
+            .getStatComponent()
+            .checkStatisticImage(expected)
+            .checkBubblesContains(
+                    new Bubble(Color.yellow, spendings.getLast().getStatBubbleText())
+            );
   }
 
 
@@ -65,7 +81,7 @@ public class SpendingTest {
             .openMenu()
             .goToProfilePage()
             .uploadPicture("img/avatar.png")
-            .assertProfilePhotoScreen(expected);
+            .assertProfileAvatar(expected);
   }
 
   @User(
@@ -82,8 +98,9 @@ public class SpendingTest {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
             .deleteSpending(spend.description())
-            .assertStatisticsRowIsNotVisible(spend.getStatisticsRowName())
-            .asserStatisticsDiagram(expected);
+            .getStatComponent()
+            .checkStatisticImage(expected)
+            .checkBubbles();
   }
 
   @User(
@@ -94,16 +111,35 @@ public class SpendingTest {
                   currency = CurrencyValues.RUB
           )
   )
-  @ScreenShotTest(value = "img/expected-edit-stat.png", rewriteExpected = true)
-  void editStatComponentTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
+  @ScreenShotTest(value = "img/expected-edit-stat.png")
+  void editStatComponentTest(UserJson user, BufferedImage expected) throws IOException {
+    Double newAmount = 2000.00;
     SpendJson spend = user.testData().spendings().getFirst();
+    SpendJson newSpend = new SpendJson(
+            null,
+            spend.spendDate(),
+            spend.category(),
+            spend.currency(),
+            newAmount,
+            spend.description(),
+            spend.username()
+    );
+
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
             .editSpending(spend.description())
-            .editAmount("2000")
+            .editAmount(newAmount.toString())
             .submit()
-            .assertStatisticsRowIsNotVisible(spend.getStatisticsRowName())
-            .asserStatisticsDiagram(expected);
+            .checkThatPageLoaded()
+            .assertSpending(newSpend)
+            .getStatComponent()
+            .checkStatisticImage(expected)
+            .checkBubbles(
+                    new Bubble(
+                            Color.yellow,
+                            newSpend.getStatBubbleText()
+                    )
+            );
   }
 
 }
