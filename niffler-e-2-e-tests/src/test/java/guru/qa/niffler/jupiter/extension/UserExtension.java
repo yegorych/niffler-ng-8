@@ -13,10 +13,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
 @ParametersAreNonnullByDefault
-public class UserExtension implements BeforeEachCallback, ParameterResolver {
-    private final UsersClient usersClient = new UsersDbClient();
-    public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
-    private static final String defaultPassword = "12345";
+public class UserExtension implements
+    BeforeEachCallback,
+    ParameterResolver {
+
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
+
+  private static final String defaultPassword = "12345";
+  private final UsersClient usersClient = UsersClient.getInstance();
 
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -48,5 +52,3 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
         final ExtensionContext context = TestsMethodContextExtension.context();
         return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }
-
-}

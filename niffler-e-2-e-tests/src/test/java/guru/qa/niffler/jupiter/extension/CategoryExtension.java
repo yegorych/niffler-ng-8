@@ -82,7 +82,3 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver 
                 .orElse(Collections.emptyList());
     }
 }
-
-
-
-
