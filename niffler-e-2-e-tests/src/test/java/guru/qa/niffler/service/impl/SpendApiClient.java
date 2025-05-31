@@ -1,5 +1,6 @@
 package guru.qa.niffler.service.impl;
 
+import guru.qa.niffler.api.logging.CustomAllureOkHttpInterceptor;
 import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
@@ -18,7 +19,13 @@ import java.util.UUID;
 
 public class SpendApiClient implements SpendClient {
   private static final Config CFG = Config.getInstance();
-  private final OkHttpClient client = new OkHttpClient.Builder().build();
+  private final OkHttpClient client = new OkHttpClient.Builder()
+          .addNetworkInterceptor(
+                  new CustomAllureOkHttpInterceptor()
+                          .setRequestTemplate("http-request.ftl")
+                          .setResponseTemplate("http-response.ftl")
+          ).build();
+
   private final Retrofit retrofit = new Retrofit.Builder()
       .baseUrl(CFG.spendUrl())
       .client(client)
