@@ -1,18 +1,27 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import lombok.Getter;
 
-import static com.codeborne.selenide.Selenide.$;
 
 public class EditSpendingPage {
 
-  private final SelenideElement descriptionInput = $("#description");
-  private final SelenideElement amountInput = $("#amount");
-  private final SelenideElement submitBtn = $("#save");
+  private final SelenideElement descriptionInput;
+  private final SelenideElement amountInput;
+  private final SelenideElement submitBtn;
   @Getter
-  Header header = new Header();
+  Header header;
+  private final SelenideDriver driver;
+
+  public EditSpendingPage(SelenideDriver driver) {
+      this.driver = driver;
+      this.descriptionInput = driver.$("#description");
+      this.amountInput = driver.$("#amount");
+      this.submitBtn = driver.$("#save");
+      this.header = new Header(driver);
+  }
 
   public EditSpendingPage editDescription(String description) {
     descriptionInput.clear();
@@ -29,7 +38,7 @@ public class EditSpendingPage {
 
   public MainPage submit() {
     submitBtn.click();
-    return new MainPage();
+    return new MainPage(driver);
   }
 
 }

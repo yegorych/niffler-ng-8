@@ -1,20 +1,26 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
-@WebTest
+import static guru.qa.niffler.utils.SelenideUtils.chromeConfig;
+
 public class ProfileTest {
     private static final Config CFG = Config.getInstance();
     private final String username = "yegor";
     private final String password = "12345";
+
+    @RegisterExtension
+    private final BrowserExtension browserExtension = new BrowserExtension();
+    private final SelenideDriver driver = new SelenideDriver(chromeConfig);
 
 
     @User(
@@ -26,7 +32,9 @@ public class ProfileTest {
     void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
         final CategoryJson archivedCategory = user.testData().categories().getFirst();
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class);
+        browserExtension.drivers().add(driver);
+        new LoginPage(driver)
                 .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
@@ -44,7 +52,9 @@ public class ProfileTest {
     @Test
     void activeCategoryShouldPresentInCategoriesList(UserJson user) {
         final CategoryJson archivedCategory = user.testData().categories().getFirst();
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class);
+        browserExtension.drivers().add(driver);
+        new LoginPage(driver)
                 .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()

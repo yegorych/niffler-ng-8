@@ -2,27 +2,37 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 
 import java.util.List;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+
 
 public class FriendPage {
-    private final static ElementsCollection friends = $$("#friends tr");
-    private final static SelenideElement friendTab = $("a[href='/people/friends']");
-    private final static SelenideElement searchInput = $("input[type='text']");
-    private final static SelenideElement allPeopleTab = $("a[href='/people/all']");
-    private final static ElementsCollection requests = $$("#requests tr");
-    private final static SelenideElement searchClearButton = $("#input-clear");
+    private final ElementsCollection friends;
+    private final SelenideElement friendTab;
+    private final SelenideElement searchInput;
+    private final SelenideElement allPeopleTab;
+    private final ElementsCollection requests;
+    private final SelenideElement searchClearButton;
+    private final SelenideDriver driver;
 
+    public FriendPage(SelenideDriver driver) {
+        this.driver = driver;
+        this.friends = driver.$$("#friends tr");
+        this.friendTab = driver.$("a[href='/people/friends']");
+        this.searchInput = driver.$("input[type='text']");
+        this.allPeopleTab = driver.$("a[href='/people/all']");
+        this.requests = driver.$$("#requests tr");
+        this.searchClearButton = driver.$("#input-clear");
+    }
 
     public PeoplePage goToPeoplePage() {
         allPeopleTab.click();
-        return new PeoplePage();
+        return new PeoplePage(driver);
     }
 
     public FriendPage assertHasFriends(String... usernames) {

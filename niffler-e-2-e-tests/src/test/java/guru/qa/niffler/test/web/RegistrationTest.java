@@ -1,28 +1,35 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomPassword;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+import static guru.qa.niffler.utils.SelenideUtils.chromeConfig;
 
-@WebTest
+
 public class RegistrationTest {
     private static final Config CFG = Config.getInstance();
     RegisterPage registerPage;
+
+    @RegisterExtension
+    private final BrowserExtension browserExtension = new BrowserExtension();
+    private final SelenideDriver driver = new SelenideDriver(chromeConfig);
     
     @BeforeEach
     public void before() {
-        registerPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .navigateToRegistration();
+        driver.open(CFG.frontUrl(), LoginPage.class);
+        registerPage = new LoginPage(driver).navigateToRegistration();
+        browserExtension.drivers().add(driver);
     }
 
     @Test

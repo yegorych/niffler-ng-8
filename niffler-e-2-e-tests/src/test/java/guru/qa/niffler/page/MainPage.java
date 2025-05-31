@@ -1,9 +1,6 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.CollectionCondition;
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebElementsCondition;
+import com.codeborne.selenide.*;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.StatComponent;
@@ -11,23 +8,35 @@ import lombok.Getter;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+
 import static guru.qa.niffler.condition.SpendConditions.spend;
 
 public class MainPage extends BasePage<MainPage> {
   @Getter
-  private final Header header = new Header();
-  private final ElementsCollection tableRows = $$("#spendings tbody tr");
-  private final SelenideElement statistics = $("#stat");
-  private final SelenideElement historySpending = $("#spendings");
-  private final SelenideElement searchClearButton = $("#input-clear");
-  private final SelenideElement searchInput = $("input[type='text']");
-  private final SelenideElement deleteButton = $("#delete");
-  private final SelenideElement dialogDeleteButton = $$("div[role='dialog'] [type='button']").find(text("Delete"));
+  private final Header header;
+  private final ElementsCollection tableRows;
+  private final SelenideElement statistics;
+  private final SelenideElement historySpending;
+  private final SelenideElement searchClearButton;
+  private final SelenideElement searchInput;
+  private final SelenideElement deleteButton;
+  private final SelenideElement dialogDeleteButton;
   @Getter
-  private final StatComponent statComponent = new StatComponent();
+  private final StatComponent statComponent;
+  private final SelenideDriver driver;
 
+  public MainPage(SelenideDriver driver) {
+    this.driver = driver;
+    header = new Header(driver);
+    tableRows = driver.$$("#spendings tbody tr");
+    statistics = driver.$("#stat");
+    historySpending = driver.$("#spendings");
+    searchClearButton = driver.$("#input-clear");
+    searchInput = driver.$("input[type='text']");
+    deleteButton = driver.$("#delete");
+    dialogDeleteButton = driver.$$("div[role='dialog'] [type='button']").find(text("Delete"));
+    statComponent = new StatComponent(driver);
+  }
 
   public EditSpendingPage editSpending(String spendingDescription) {
     findSpend(spendingDescription);
@@ -35,7 +44,7 @@ public class MainPage extends BasePage<MainPage> {
         .$$("td")
         .get(5)
         .click();
-    return new EditSpendingPage();
+    return new EditSpendingPage(driver);
   }
 
   public MainPage selectSpending(String spendingDescription) {
