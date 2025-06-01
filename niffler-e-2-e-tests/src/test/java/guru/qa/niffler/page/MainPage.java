@@ -9,12 +9,16 @@ import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.StatComponent;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static guru.qa.niffler.condition.SpendConditions.spend;
 
+@ParametersAreNonnullByDefault
 public class MainPage extends BasePage<MainPage> {
   @Getter
   private final Header header = new Header();
@@ -29,6 +33,7 @@ public class MainPage extends BasePage<MainPage> {
   private final StatComponent statComponent = new StatComponent();
 
 
+  @Nonnull
   public EditSpendingPage editSpending(String spendingDescription) {
     findSpend(spendingDescription);
     tableRows.find(text(spendingDescription))
@@ -38,6 +43,7 @@ public class MainPage extends BasePage<MainPage> {
     return new EditSpendingPage();
   }
 
+  @Nonnull
   public MainPage selectSpending(String spendingDescription) {
     findSpend(spendingDescription);
     tableRows.find(text(spendingDescription))
@@ -47,6 +53,7 @@ public class MainPage extends BasePage<MainPage> {
     return this;
   }
 
+  @Nonnull
   public MainPage deleteSpending(String spendingDescription) {
     selectSpending(spendingDescription);
     deleteButton.click();
@@ -61,16 +68,19 @@ public class MainPage extends BasePage<MainPage> {
   }
 
 
+  @Nonnull
   public MainPage assertStatisticsIsVisible() {
     statistics.should(visible);
     return this;
   }
 
+  @Nonnull
   public MainPage assertHistorySpendingIsVisible() {
     historySpending.should(visible);
     return this;
   }
 
+  @Nonnull
   public MainPage assertSpending(SpendJson... spendings) {
     tableRows.should(spend(spendings));
     return this;
@@ -85,6 +95,7 @@ public class MainPage extends BasePage<MainPage> {
   }
 
 
+  @Nonnull
   @Override
   public MainPage checkThatPageLoaded() {
     statistics.should(visible);

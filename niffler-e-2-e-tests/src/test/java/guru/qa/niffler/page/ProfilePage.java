@@ -8,6 +8,8 @@ import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import static com.codeborne.selenide.Selenide.$$;
 import static guru.qa.niffler.jupiter.extension.ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@ParametersAreNonnullByDefault
 public class ProfilePage {
     private final ElementsCollection categories = $$(".MuiChip-label");
     private final SelenideElement showArchivedCheckbox = $("[type='checkbox']");
@@ -36,11 +39,13 @@ public class ProfilePage {
     @Getter
     Header header = new Header();
 
+    @Nonnull
     public ProfilePage showArchivedCategories() {
         showArchivedCheckbox.click();
         return this;
     }
 
+    @Nonnull
     public ProfilePage archiveCategory(String categoryName) {
         categories.findBy(text(categoryName))
                 .shouldBe(visible)
@@ -51,6 +56,7 @@ public class ProfilePage {
         return this;
     }
 
+    @Nonnull
     public ProfilePage unarchiveCategory(String categoryName) {
         categories.findBy(text(categoryName))
                 .shouldBe(visible)
@@ -61,14 +67,12 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage approveArchiveCategory() {
+    public void approveArchiveCategory() {
         approveArchiveBtn.click();
-        return this;
     }
 
-    public ProfilePage approveUnarchiveCategory() {
+    public void approveUnarchiveCategory() {
         approveUnarchiveBtn.click();
-        return this;
     }
 
     public void assertCategoryIsArchived(String categoryName) {
@@ -83,6 +87,7 @@ public class ProfilePage {
         categories.findBy(text(categoryName)).should(visible);
     }
 
+    @Nonnull
     public ProfilePage uploadPicture(String pathToImage) {
         uploadPictureInput.uploadFromClasspath(pathToImage);
         saveChangesButton.click();
@@ -95,7 +100,7 @@ public class ProfilePage {
                 .should(text(message));
     }
 
-    public ProfilePage assertProfileAvatar(BufferedImage expectedImage) throws IOException {
+    public void assertProfileAvatar(BufferedImage expectedImage) throws IOException {
         Selenide.sleep(1000);
         BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
         assertFalse(new ScreenDiffResult(
@@ -103,7 +108,6 @@ public class ProfilePage {
                 actualImage
         ),
             ASSERT_SCREEN_MESSAGE);
-        return this;
     }
 
 

@@ -4,9 +4,13 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.Selenide.$;
 
-public class EditSpendingPage {
+@ParametersAreNonnullByDefault
+public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
   private final SelenideElement descriptionInput = $("#description");
   private final SelenideElement amountInput = $("#amount");
@@ -14,6 +18,7 @@ public class EditSpendingPage {
   @Getter
   Header header = new Header();
 
+  @Nonnull
   public EditSpendingPage editDescription(String description) {
     descriptionInput.clear();
     descriptionInput.setValue(description);
@@ -21,15 +26,21 @@ public class EditSpendingPage {
     return this;
   }
 
+  @Nonnull
   public EditSpendingPage editAmount(String amount) {
     amountInput.clear();
     amountInput.setValue(amount);
     return this;
   }
 
+  @Nonnull
   public MainPage submit() {
     submitBtn.click();
     return new MainPage();
   }
 
+  @Override
+  public EditSpendingPage checkThatPageLoaded() {
+    return null;
+  }
 }

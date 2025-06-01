@@ -11,10 +11,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
 
+
+@ParametersAreNonnullByDefault
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(SpendingExtension.class);
@@ -64,9 +66,16 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   public SpendJson[] resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return (SpendJson[]) extensionContext.getStore(SpendingExtension.NAMESPACE).get(extensionContext.getUniqueId(), List.class)
-            .toArray(SpendJson[]::new);
+//    return (SpendJson[]) extensionContext.getStore(SpendingExtension.NAMESPACE).get(extensionContext.getUniqueId(), List.class)
+//            .toArray(SpendJson[]::new);
+      return createdSpends(extensionContext).toArray(SpendJson[]::new);
   }
+
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public static List<SpendJson> createdSpends(ExtensionContext extensionContext) {
+        return Optional.ofNullable(extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class))
+                .orElse(Collections.emptyList());
+    }
 }

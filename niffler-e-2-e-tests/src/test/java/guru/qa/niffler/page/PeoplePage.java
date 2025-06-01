@@ -6,13 +6,14 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import lombok.Getter;
 
-import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
+@ParametersAreNonnullByDefault
 public class PeoplePage {
     @Getter
     Header header = new Header();
@@ -31,12 +32,11 @@ public class PeoplePage {
         searchInput.pressEnter();
     }
 
-    public PeoplePage assertHasInvitationRequests(String... usernames) {
+    public void assertHasInvitationRequests(String... usernames) {
         for (String username : usernames) {
             findPeople(username);
             invitationRequests.find(text(username)).should(Condition.visible);
         }
-        return this;
     }
 
 

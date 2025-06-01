@@ -14,14 +14,18 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
 
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
@@ -37,16 +41,18 @@ public class UsersDbClient implements UsersClient {
   );
 
 
+
+    @NotNull
     public UserJson createUser(String username, String password) {
-    return xaTransactionTemplate.execute(() -> {
-          AuthUserEntity authUser = authUserEntity(username, password);
-          authUserRepository.create(authUser);
-          return UserJson.fromEntity(
-              userdataUserRepository.create(userEntity(username)),
-              null
-          );
-        }
-    );
+    return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
+                AuthUserEntity authUser = authUserEntity(username, password);
+                authUserRepository.create(authUser);
+                return UserJson.fromEntity(
+                        userdataUserRepository.create(userEntity(username)),
+                        null
+                );
+            }
+    ));
   }
 
     @Override

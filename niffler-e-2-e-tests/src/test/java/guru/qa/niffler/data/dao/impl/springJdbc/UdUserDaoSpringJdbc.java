@@ -4,22 +4,26 @@ import guru.qa.niffler.data.dao.UserdataDao;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class UdUserDaoSpringJdbc implements UserdataDao {
 
   private static final Config CFG = Config.getInstance();
 
+  @NotNull
   @Override
   public UserEntity create(UserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -45,6 +49,7 @@ public class UdUserDaoSpringJdbc implements UserdataDao {
     return user;
   }
 
+  @NotNull
   @Override
   public Optional<UserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -62,6 +67,7 @@ public class UdUserDaoSpringJdbc implements UserdataDao {
 
   }
 
+  @NotNull
   @Override
   public Optional<UserEntity> findByUsername(String username) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -84,6 +90,7 @@ public class UdUserDaoSpringJdbc implements UserdataDao {
     jdbcTemplate.update("DELETE FROM \"user\" WHERE id = ?", user.getId());
   }
 
+  @NotNull
   @Override
   public List<UserEntity> findAll() {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -93,6 +100,7 @@ public class UdUserDaoSpringJdbc implements UserdataDao {
     );
   }
 
+  @NotNull
   @Override
   public UserEntity update(UserEntity user) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));

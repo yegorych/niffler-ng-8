@@ -7,15 +7,19 @@ import guru.qa.niffler.page.PeoplePage;
 import guru.qa.niffler.page.ProfilePage;
 import lombok.Getter;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
+@ParametersAreNonnullByDefault
 public class Header {
-    private final SelenideElement menu = $("[aria-label='Menu']");
-    private final ElementsCollection menuItems = $$("[role='menuitem']");
+    private final SelenideElement self = $("#root header");
+    private final SelenideElement menu = self.$("[aria-label='Menu']");
+    private final ElementsCollection menuItems = self.$$("[role='menuitem']");
     @Getter
-    private final SelenideElement profilePhoto = $("header .MuiAvatar-root");
+    private final SelenideElement profilePhoto = self.$("header .MuiAvatar-root");
 
     public ProfilePage goToProfilePage() {
         menuItems.findBy(text("Profile")).click();

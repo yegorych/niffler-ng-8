@@ -4,13 +4,15 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
+@ParametersAreNonnullByDefault
 public class FriendPage {
     private final static ElementsCollection friends = $$("#friends tr");
     private final static SelenideElement friendTab = $("a[href='/people/friends']");
@@ -20,30 +22,28 @@ public class FriendPage {
     private final static SelenideElement searchClearButton = $("#input-clear");
 
 
+    @Nonnull
     public PeoplePage goToPeoplePage() {
         allPeopleTab.click();
         return new PeoplePage();
     }
 
-    public FriendPage assertHasFriends(String... usernames) {
+    public void assertHasFriends(String... usernames) {
         for (String username : usernames) {
             findFriend(username);
             friends.findBy(text(username)).should(visible);
         }
-        return this;
     }
 
-    public FriendPage assertHasNoFriends() {
+    public void assertHasNoFriends() {
         friends.should(CollectionCondition.empty);
-        return this;
     }
 
-    public FriendPage assertHasRequests(String... usernames) {
+    public void assertHasRequests(String... usernames) {
         for (String username : usernames) {
             findFriend(username);
             requests.findBy(text(username)).should(visible);
         }
-        return this;
     }
 
     private void findFriend(String username) {
@@ -55,9 +55,8 @@ public class FriendPage {
     }
 
 
-    public FriendPage assertHasNoRequests() {
+    public void assertHasNoRequests() {
         requests.should(CollectionCondition.empty);
-        return this;
     }
 
 
