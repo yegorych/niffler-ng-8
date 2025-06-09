@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,55 +25,64 @@ public class RegisterPage {
 
 
     @Nonnull
+    @Step("set username")
     public RegisterPage setUsername(String username) {
         this.username.sendKeys(username);
         return this;
     }
     @Nonnull
+    @Step("set password")
     public RegisterPage setPassword(String password) {
         this.password.sendKeys(password);
         return this;
     }
     @Nonnull
+    @Step("set password submit")
     public RegisterPage setPasswordSubmit(String passwordSubmit) {
         this.passwordSubmit.sendKeys(passwordSubmit);
         return this;
     }
     @Nonnull
+    @Step("submit registration")
     public RegisterPage submitRegistration() {
         signUpBtn.click();
         return this;
     }
     @Nonnull
+    @Step("go to login page")
     public LoginPage goToLoginPage() {
         signInBtn.click();
         return new LoginPage();
     }
 
+    @Step("check that registration was successful")
     public void assertRegistrationSuccess(){
         signInBtn.should(Condition.visible);
     }
 
     @Nonnull
+    @Step("check username length")
     public RegisterPage assertUsernameLength(){
         $(byText(USERNAME_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
         return this;
     }
 
+    @Step("check username uniq")
     public void assertUsernameUniq(String username){
         $(byText(USERNAME_EXISTS_ERROR_MESSAGE.formatted(username))).should(Condition.visible);
     }
 
     @Nonnull
+    @Step("check password length")
     public RegisterPage assertPasswordLength(){
         $(byText(PASSWORD_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
         return this;
     }
 
+    @Step("check error about password mismatch is visible")
     public void assertPasswordEqual(){
         $(byText(PASSWORD_EQUAL_ERROR_MESSAGE)).should(Condition.visible);
     }
-
 
 
 

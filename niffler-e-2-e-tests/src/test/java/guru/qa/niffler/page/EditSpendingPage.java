@@ -1,7 +1,9 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.Calendar;
 import guru.qa.niffler.page.component.Header;
+import io.qameta.allure.Step;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
@@ -15,18 +17,20 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   private final SelenideElement descriptionInput = $("#description");
   private final SelenideElement amountInput = $("#amount");
   private final SelenideElement submitBtn = $("#save");
+  private final SelenideElement categoryInput = $("#category");
   @Getter
   Header header = new Header();
 
   @Nonnull
+  @Step("edit spending description")
   public EditSpendingPage editDescription(String description) {
     descriptionInput.clear();
     descriptionInput.setValue(description);
-    submitBtn.click();
     return this;
   }
 
   @Nonnull
+  @Step("edit spending amount")
   public EditSpendingPage editAmount(String amount) {
     amountInput.clear();
     amountInput.setValue(amount);
@@ -34,13 +38,31 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   }
 
   @Nonnull
+  @Step("edit name of spending category")
+  public EditSpendingPage editCategory(String category) {
+    categoryInput.clear();
+    categoryInput.setValue(category);
+    return this;
+  }
+
+
+  @Nonnull
+  @Step("sumbit changes")
   public MainPage submit() {
     submitBtn.click();
     return new MainPage();
   }
 
   @Override
+  @Step("check that edit spending page loaded")
   public EditSpendingPage checkThatPageLoaded() {
     return null;
+  }
+
+  @Nonnull
+  @Step("open calendar")
+  public Calendar calendar() {
+    $(".MuiInputAdornment-root button").click();
+    return new Calendar($(".MuiDateCalendar-root"));
   }
 }

@@ -13,14 +13,23 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.xml.crypto.Data;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.codeborne.selenide.CheckResult.accepted;
 import static com.codeborne.selenide.Selenide.$$;
 
+@ParametersAreNonnullByDefault
 public class SpendConditions {
-    public record SpendFront(String category, Double amount, CurrencyValues currency, String description, String date) {}
+    //public record SpendFront(String category, Double amount, CurrencyValues currency, String description, String date) {}
+    public record SpendFront(String category, Double amount, CurrencyValues currency, String description, Date date) {}
 
     @Nonnull
     public static WebElementsCondition spend(SpendJson... spends){
@@ -48,7 +57,7 @@ public class SpendConditions {
                     Double amount = Double.parseDouble(amountWithCurrency[0]);
                     CurrencyValues currency = CurrencyValues.fromSymbol(amountWithCurrency[1]);
                     String description = spend.get(3).getText();
-                    String date = spend.get(4).getText();
+                    Date date = convertToDate(spend.get(4).getText());
                     return new SpendFront(categoryName, amount, currency, description, date);
                 }).toList();
 
@@ -124,6 +133,13 @@ public class SpendConditions {
             @Override
             public String toString() {
                 return expectedSpendsFrontList.toString();
+            }
+
+            @Nonnull
+            private Date convertToDate(String dateStr) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH);
+                LocalDate localDate = LocalDate.parse(dateStr, formatter);
+                return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             }
         };
     }

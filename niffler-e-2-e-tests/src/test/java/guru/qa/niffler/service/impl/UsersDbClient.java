@@ -77,7 +77,7 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
-    public void createIncomeInvitations(UserJson targetUser, int count) {
+    public void createOutcomeInvitations(UserJson targetUser, int count) {
     if (count > 0) {
       UserEntity targetEntity = userdataUserRepository.findById(
           targetUser.id()
@@ -98,7 +98,7 @@ public class UsersDbClient implements UsersClient {
     }
   }
 
-  public void createOutcomeInvitations(UserJson targetUser, int count) {
+  public void createIncomeInvitations(UserJson targetUser, int count) {
     if (count > 0) {
       UserEntity targetEntity = userdataUserRepository.findById(
           targetUser.id()
