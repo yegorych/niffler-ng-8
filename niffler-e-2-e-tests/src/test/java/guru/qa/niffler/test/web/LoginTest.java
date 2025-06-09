@@ -26,7 +26,7 @@ public class LoginTest {
     }
 
     @Test
-    @DisabledByIssue("3")
+    //@DisabledByIssue("3")
     @User
     void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
         loginPage.doLogin(user.username(), user.testData().password())

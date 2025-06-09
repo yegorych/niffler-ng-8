@@ -8,6 +8,7 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
 @WebTest
@@ -30,7 +31,7 @@ public class ProfileTest {
                 .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
-                .goToProfilePage()
+                .toProfilePage()
                 .archiveCategory(archivedCategory.name())
                 .assertCategoryIsArchived(archivedCategory.name());
     }
@@ -48,9 +49,21 @@ public class ProfileTest {
                 .doLogin(user.username(), user.testData().password())
                 .getHeader()
                 .openMenu()
-                .goToProfilePage()
+                .toProfilePage()
                 .showArchivedCategories()
                 .unarchiveCategory(archivedCategory.name())
                 .assertCategoryIsUnarchived(archivedCategory.name());
+    }
+
+    @User
+    @Test
+    void updateProfileTest(UserJson user) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(user.username(), user.testData().password())
+                .getHeader()
+                .openMenu()
+                .toProfilePage()
+                .updateName(RandomDataUtils.randomName())
+                .checkAlertMessage("Profile successfully updated");
     }
 }

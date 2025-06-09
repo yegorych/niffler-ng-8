@@ -9,9 +9,14 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
     private final SpendRepository spendRepository = new SpendRepositoryHibernate();
     private static final Config CFG = Config.getInstance();
@@ -20,23 +25,25 @@ public class SpendDbClient implements SpendClient {
     );
 
 
+    @NotNull
     @Override
     public SpendJson createSpend(SpendJson spend) {
         SpendEntity spendEntity = SpendEntity.fromJson(spend);
-        return xaTransactionTemplate.execute(() -> {
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             if (spendEntity.getCategory().getId() == null) {
                 spendRepository.findCategoryByUsernameAndSpendName(
-                        spendEntity.getCategory().getUsername(),
-                        spendEntity.getCategory().getName())
+                                spendEntity.getCategory().getUsername(),
+                                spendEntity.getCategory().getName())
                         .ifPresent(spendEntity::setCategory);
             }
             return SpendJson.fromEntity(spendRepository.create(spendEntity));
-        });
+        }));
     }
 
+    @NotNull
     @Override
     public SpendJson updateSpend(SpendJson spend) {
-        return xaTransactionTemplate.execute(()->{
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> {
             SpendEntity spendEntity = SpendEntity.fromJson(spend);
             if (spendEntity.getCategory().getId() == null) {
                 spendRepository.findCategoryByUsernameAndSpendName(
@@ -48,7 +55,7 @@ public class SpendDbClient implements SpendClient {
                                 spendRepository.createCategory(spendEntity.getCategory())));
             }
             return SpendJson.fromEntity(spendRepository.update(SpendEntity.fromJson(spend)));
-        });
+        }));
 
     }
 
@@ -62,6 +69,7 @@ public class SpendDbClient implements SpendClient {
 
     }
 
+    @Nullable
     @Override
     public SpendJson findSpendById(UUID id) {
         return xaTransactionTemplate.execute(()->
@@ -72,15 +80,17 @@ public class SpendDbClient implements SpendClient {
 
     }
 
+    @Nullable
     @Override
     public SpendJson findSpend(SpendJson spendJson) {
         return findSpendById(spendJson.id());
     }
 
+    @NotNull
     @Override
     public CategoryJson createCategory(CategoryJson category) {
-        return xaTransactionTemplate.execute(() ->
-                CategoryJson.fromEntity(spendRepository.createCategory(CategoryEntity.fromJson(category))));
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() ->
+                CategoryJson.fromEntity(spendRepository.createCategory(CategoryEntity.fromJson(category)))));
     }
 
     @Override

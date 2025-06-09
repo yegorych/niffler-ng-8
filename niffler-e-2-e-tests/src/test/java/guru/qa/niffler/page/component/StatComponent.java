@@ -53,12 +53,6 @@ public class StatComponent {
         return ImageIO.read(requireNonNull(chart.screenshot()));
     }
 
-//    @Step("Check that stat bubbles contains colors {expectedColors}")
-//    @Nonnull
-//    public StatComponent checkBubbles(Color... expectedColors) {
-//        bubbles.should(color(expectedColors));
-//        return this;
-//    }
 
     @Step("Check stat bubbles")
     @Nonnull

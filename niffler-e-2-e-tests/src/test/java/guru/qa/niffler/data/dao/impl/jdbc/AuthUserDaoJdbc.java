@@ -3,21 +3,25 @@ package guru.qa.niffler.data.dao.impl.jdbc;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
+@SuppressWarnings("resource")
 public class AuthUserDaoJdbc implements AuthUserDao {
 
     private static final Config CFG = Config.getInstance();
 
+    @Nonnull
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -47,6 +51,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -68,6 +73,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -84,6 +90,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -110,6 +117,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthUserEntity> findAll() {
         List<AuthUserEntity> aueList = new ArrayList<>();

@@ -2,15 +2,12 @@ package guru.qa.niffler.jupiter.extension;
 
 import io.qameta.allure.Allure;
 import org.apache.commons.lang3.time.StopWatch;
-import org.checkerframework.checker.units.qual.N;
-import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -19,6 +16,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+
+@ParametersAreNonnullByDefault
 public class UsersQueueExtension implements
     BeforeTestExecutionCallback,
     AfterTestExecutionCallback,
@@ -29,9 +28,9 @@ public class UsersQueueExtension implements
   public record StaticUser(
           String username,
           String password,
-          String friend,
-          String income,
-          String outcome) {
+          @Nullable String friend,
+          @Nullable String income,
+          @Nullable String outcome) {
     }
 
   private static final Queue<StaticUser> EMPTY_USERS = new ConcurrentLinkedQueue<>();
@@ -58,6 +57,7 @@ public class UsersQueueExtension implements
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public void beforeTestExecution(ExtensionContext context) {
     Arrays.stream(context.getRequiredTestMethod().getParameters())
@@ -85,6 +85,7 @@ public class UsersQueueExtension implements
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public void afterTestExecution(ExtensionContext context) {
     Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(
         context.getUniqueId(), Map.class);
@@ -111,6 +112,7 @@ public class UsersQueueExtension implements
               .orElseThrow(() -> new IllegalArgumentException("Annotation UserType is missing on the parameter."));
 
   }
+
     private static Queue<StaticUser> getQueueForType(UserType.Type type) {
         return switch (type) {
             case EMPTY -> EMPTY_USERS;

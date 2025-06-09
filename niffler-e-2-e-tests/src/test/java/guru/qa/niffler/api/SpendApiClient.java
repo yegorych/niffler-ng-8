@@ -11,19 +11,21 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import java.util.List;
 import retrofit2.Call;
+
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Date;
 
+@ParametersAreNonnullByDefault
 public class SpendApiClient {
-  private static final Config CFG = Config.getInstance();
-  private final OkHttpClient client = new OkHttpClient.Builder().build();
   private final Retrofit retrofit = new Retrofit.Builder()
-      .baseUrl(CFG.spendUrl())
-      .client(client)
+      .baseUrl(Config.getInstance().spendUrl())
       .addConverterFactory(JacksonConverterFactory.create())
       .build();
   private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
+  @Nullable
   private <T> T executeCall(Call<T> call){
       final Response<T> response;
       try {
@@ -47,7 +49,10 @@ public class SpendApiClient {
       return executeCall(spendApi.getSpend(id, username));
   }
 
-  public List<SpendJson> getAllSpends(String username, CurrencyValues currency, Date from, Date to) {
+  public List<SpendJson> getAllSpends(String username,
+                                      @Nullable CurrencyValues currency,
+                                      @Nullable Date from,
+                                      @Nullable Date to) {
       return executeCall(spendApi.getAllSpends(username, currency, from, to));
   }
 

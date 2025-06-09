@@ -8,23 +8,28 @@ import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@ParametersAreNonnullByDefault
 public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository {
     private static final Config CFG = Config.getInstance();
     private final UserdataDao userdataDao = new UdUserDaoSpringJdbc();
 
+    @NotNull
     @Override
     public UserEntity create(UserEntity user) {
         return userdataDao.create(user);
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -37,6 +42,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         );
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userdataJdbcUrl()));
@@ -49,6 +55,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         );
     }
 
+    @NotNull
     @Override
     public UserEntity update(UserEntity user) {
         return userdataDao.update(user);

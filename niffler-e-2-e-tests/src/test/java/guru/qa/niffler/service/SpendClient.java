@@ -3,14 +3,23 @@ package guru.qa.niffler.service;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public interface SpendClient {
+    @Nonnull
     SpendJson createSpend(SpendJson spend);
+    @Nonnull
     SpendJson updateSpend(SpendJson spend);
     void deleteSpend(SpendJson spendJson);
+    @Nullable
     SpendJson findSpendById(UUID id);
+    @Nullable
     SpendJson findSpend(SpendJson spendJson);
+    @Nonnull
     CategoryJson createCategory(CategoryJson category);
     void deleteCategory(CategoryJson category);
 }

@@ -9,13 +9,18 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.SearchOption;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
+
+@ParametersAreNonnullByDefault
 public class IssueExtension implements ExecutionCondition {
 
   private static final GhApiClient ghApiClient = new GhApiClient();
 
   @SneakyThrows
   @Override
+  @Nonnull
   public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
     return AnnotationSupport.findAnnotation(
         context.getRequiredTestMethod(),

@@ -7,14 +7,17 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserApi;
 import guru.qa.niffler.service.UsersClient;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
+@ParametersAreNonnullByDefault
 public class UserApiClient implements UsersClient {
     private static final Config CFG = Config.getInstance();
     private final OkHttpClient client = new OkHttpClient.Builder()
@@ -42,6 +45,7 @@ public class UserApiClient implements UsersClient {
         return response.body();
     }
 
+    @NotNull
     @Override
     public UserJson createUser(String username, String password) {
         throw new UnsupportedOperationException("Not supported yet.");

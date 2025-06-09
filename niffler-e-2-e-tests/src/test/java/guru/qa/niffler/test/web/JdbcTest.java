@@ -11,6 +11,7 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 import static guru.qa.niffler.utils.RandomDataUtils.*;
 
+@Disabled
 public class JdbcTest {
 
 

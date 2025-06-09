@@ -7,16 +7,21 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
 import okhttp3.OkHttpClient;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
 
+
+@ParametersAreNonnullByDefault
 public class SpendApiClient implements SpendClient {
   private static final Config CFG = Config.getInstance();
   private final OkHttpClient client = new OkHttpClient.Builder()
@@ -33,6 +38,7 @@ public class SpendApiClient implements SpendClient {
       .build();
   private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
+
   private <T> T executeCall(Call<T> call){
       final Response<T> response;
       try {
@@ -44,6 +50,7 @@ public class SpendApiClient implements SpendClient {
       return response.body();
   }
 
+    @NotNull
     @Override
     public SpendJson createSpend(SpendJson spend) {
         if (spend.category().id() == null) {
@@ -52,6 +59,7 @@ public class SpendApiClient implements SpendClient {
         return executeCall(spendApi.addSpend(spend));
     }
 
+    @NotNull
     @Override
     public SpendJson updateSpend(SpendJson spend) {
         return executeCall(spendApi.editSpend(spend));
@@ -67,11 +75,14 @@ public class SpendApiClient implements SpendClient {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+
+    @Nullable
     @Override
     public SpendJson findSpend(SpendJson spendJson) {
         return executeCall(spendApi.getSpend(spendJson.id().toString(), spendJson.username()));
     }
 
+    @NotNull
     @Override
     public CategoryJson createCategory(CategoryJson category) {
         return executeCall(spendApi.addCategory(category));

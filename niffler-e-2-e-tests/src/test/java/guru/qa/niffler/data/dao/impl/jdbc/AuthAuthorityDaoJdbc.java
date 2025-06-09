@@ -5,14 +5,19 @@ import guru.qa.niffler.data.dao.AuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.Authority;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
+@SuppressWarnings("resource")
 public class AuthAuthorityDaoJdbc implements AuthorityDao {
 
     private static final Config CFG = Config.getInstance();
@@ -51,7 +56,9 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
         }
     }
 
+    @Nonnull
     @Override
+    @SuppressWarnings("resource")
     public List<AuthorityEntity> findByUserId(UUID id) {
         List<AuthorityEntity> aeList = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -91,6 +98,7 @@ public class AuthAuthorityDaoJdbc implements AuthorityDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAll() {
         List<AuthorityEntity> aeList = new ArrayList<>();

@@ -8,14 +8,18 @@ import guru.qa.niffler.data.dao.impl.jdbc.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryJdbc implements SpendRepository {
     private static final Config CFG = Config.getInstance();
     private final SpendDao spendDao = new SpendDaoJdbc();
     private final CategoryDao categoryDao = new CategoryDaoJdbc();
+    @NotNull
     @Override
     public SpendEntity create(SpendEntity spend) {
         if (spend.getCategory().getId() == null) {
@@ -24,31 +28,37 @@ public class SpendRepositoryJdbc implements SpendRepository {
         return spendDao.create(spend);
     }
 
+    @NotNull
     @Override
     public SpendEntity update(SpendEntity spend) {
         return spendDao.update(spend);
     }
 
+    @NotNull
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return categoryDao.create(category);
     }
 
+    @NotNull
     @Override
     public CategoryEntity updateCategory(CategoryEntity category) {
         return categoryDao.update(category);
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         return categoryDao.findCategoryById(id);
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndSpendName(String username, String name) {
         return categoryDao.findCategoryByUsernameAndCategoryName(username, name);
     }
 
+    @NotNull
     @Override
     public Optional<SpendEntity> findById(UUID id) {
         Optional<SpendEntity> spendEntity = spendDao.findSpendById(id);
@@ -57,6 +67,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
         return spendEntity;
     }
 
+    @NotNull
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
         Optional<SpendEntity> spendEntity = spendDao.findByUsernameAndDescription(username, description);
