@@ -1,31 +1,66 @@
 package guru.qa.niffler.service.impl;
 
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UsersClient;
 
-import javax.annotation.Nonnull;
+import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.api.core.RestClient;
+import guru.qa.niffler.config.Config;
+import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UserApi;
+import guru.qa.niffler.service.client.AuthClient;
+import guru.qa.niffler.service.client.UsersClient;
+import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.time.StopWatch;
+
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @ParametersAreNonnullByDefault
-public class UsersApiClient implements UsersClient {
-  @Nonnull
-  @Override
-  public UserJson createUser(String username, String password) {
-    return null;
-  }
+public class UsersApiClient extends RestClient implements UsersClient{
+    private static final Config CFG = Config.getInstance();
+//    private final OkHttpClient client = new OkHttpClient.Builder()
+//            .addNetworkInterceptor(
+//                    new CustomAllureOkHttpInterceptor()
+//                            .setRequestTemplate("http-request.ftl")
+//                            .setResponseTemplate("http-response.ftl")
+//            ).build();
 
-  @Override
-  public void addIncomeInvitation(UserJson targetUser, int count) {
+    private final UserApi userApi = create(UserApi.class);
 
-  }
+    public UsersApiClient() {
+        super(CFG.userdataUrl());
+    }
+    private final AuthClient authClient = new AuthApiClient();
 
-  @Override
-  public void addOutcomeInvitation(UserJson targetUser, int count) {
 
-  }
 
-  @Override
-  public void addFriend(UserJson targetUser, int count) {
+    @NotNull
+    @Override
+    public UserJson createUser(String username, String password) {
+        authClient.requestRegisterForm();
+        authClient.register(username, password);
+        StopWatch sw = StopWatch.createStarted();
+        while (sw.getTime(TimeUnit.SECONDS) < 3){
+            UserJson userJson = executeCall(userApi.current(username));
+            if (userJson != null) {
+                return userJson.withPassword(password);
+            } else Selenide.sleep(100);
+        }
+        throw new IllegalStateException("Could not register user");
+    }
 
-  }
+    @Override
+    public void createIncomeInvitations(UserJson targetUser, int count) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void createOutcomeInvitations(UserJson targetUser, int count) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void createFriends(UserJson targetUser, int count) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

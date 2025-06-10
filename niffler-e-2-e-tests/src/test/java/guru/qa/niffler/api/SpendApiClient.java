@@ -27,17 +27,17 @@ public class SpendApiClient extends RestClient {
     this.spendApi = create(SpendApi.class);
   }
 
-  @Nullable
-  private <T> T executeCall(Call<T> call){
-      final Response<T> response;
-      try {
-          response = call.execute();
-      } catch (IOException e) {
-          throw new AssertionError(e);
-      }
-      Assertions.assertTrue(response.isSuccessful());
-      return response.body();
-  }
+//  @Nullable
+//  private <T> T executeCall(Call<T> call){
+//      final Response<T> response;
+//      try {
+//          response = call.execute();
+//      } catch (IOException e) {
+//          throw new AssertionError(e);
+//      }
+//      Assertions.assertTrue(response.isSuccessful());
+//      return response.body();
+//  }
 
   public SpendJson addSpend(SpendJson spend) {
       return executeCall(spendApi.addSpend(spend));

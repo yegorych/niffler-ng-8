@@ -1,7 +1,9 @@
 package guru.qa.niffler.service;
 
+import guru.qa.niffler.model.UserJson;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -17,4 +19,7 @@ public interface UserApi {
 
     @DELETE("/internal/friends/remove")
     Call<Void> removeFriend(@Query("username") String username, @Query("targetUsername") String targetUsername);
+
+    @GET("/internal/users/current")
+    Call<UserJson> current(@Query("username") String username);
 }

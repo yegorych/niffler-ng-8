@@ -10,10 +10,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SearchField {
-    private final SelenideElement self = $("form.MuiBox-root");
+public class SearchField extends BaseComponent<SearchField> {
     private final SelenideElement searchInput = self.$("input[aria-label='search']");
     private final SelenideElement searchInputClear = self.$("#input-clear");
+
+    protected SearchField() {
+        super($("form.MuiBox-root"));
+    }
 
     @Nonnull
     @Step("Search {0}")

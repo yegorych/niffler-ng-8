@@ -15,14 +15,17 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SpendingTable {
-    private final SelenideElement self = $(".MuiTableContainer-root");
+public class SpendingTable extends BaseComponent<SpendingTable> {
     private final SearchField searchField = new SearchField();
     private final SelenideElement periodBtn = self.$("input[name='period']");
     private final ElementsCollection tableRows = self.$$("#spendings tbody tr");
     private final SelenideElement deleteButton = self.$("#delete");
     private final SelenideElement dialogDeleteButton = self.$$("div[role='dialog'] [type='button']").find(text("Delete"));
     private final SelenideElement nextPageBtn = self.$("#page-next");
+
+    public SpendingTable() {
+        super($(".MuiTableContainer-root"));
+    }
 
     @Nonnull
     @Step("Select period")

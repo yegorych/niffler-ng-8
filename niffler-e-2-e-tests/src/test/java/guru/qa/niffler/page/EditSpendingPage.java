@@ -5,6 +5,7 @@ import guru.qa.niffler.page.component.Calendar;
 import guru.qa.niffler.page.component.Header;
 import io.qameta.allure.Step;
 import lombok.Getter;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,7 +57,7 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
   @Override
   @Step("check that edit spending page loaded")
   public EditSpendingPage checkThatPageLoaded() {
-    return null;
+    throw new NotImplementedException("This method has not been implemented yet");
   }
 
   @Nonnull

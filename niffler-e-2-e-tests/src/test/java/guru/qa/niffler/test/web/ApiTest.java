@@ -1,0 +1,14 @@
+package guru.qa.niffler.test.web;
+
+import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.client.UsersClient;
+import guru.qa.niffler.service.impl.UsersApiClient;
+import org.junit.jupiter.api.Test;
+
+public class ApiTest {
+    @Test
+    void authApiTest() {
+        UsersClient usersClient = new UsersApiClient();
+        UserJson userJson = usersClient.createUser("duck99", "12345");
+    }
+}

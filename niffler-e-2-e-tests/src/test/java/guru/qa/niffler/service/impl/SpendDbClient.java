@@ -8,7 +8,7 @@ import guru.qa.niffler.data.repository.impl.SpendRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.service.SpendClient;
+import guru.qa.niffler.service.client.SpendClient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

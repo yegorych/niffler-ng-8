@@ -19,15 +19,15 @@ public class Header extends BaseComponent<Header> {
     private final ElementsCollection menuItems = self.parent().parent().$$("[role='menuitem']");
     private final Dialog dialog = new Dialog();
 
-  public Header() {
+    public Header() {
     super($("#root header"));
-
-  }
+    }
 
     @Nonnull
     @Step("Go to Friends page")
     public FriendPage toFriendsPage() {
         menuItems.findBy(text("Friends")).click();
+        //menuItems.$("a[href='/people/friends']").click();
         return new FriendPage();
     }
 
@@ -51,6 +51,20 @@ public class Header extends BaseComponent<Header> {
     public MainPage toMainPage() {
         self.$("a[href='/main']").click();
         return new MainPage();
+    }
+
+    @Nonnull
+    @Step("Go to all people page")
+    public PeoplePage toAllPeoplesPage() {
+        menuItems.findBy(text("All People")).click();
+        return new PeoplePage();
+    }
+
+    @Nonnull
+    @Step("Go to profile page")
+    public ProfilePage toProfilePage() {
+        menuItems.findBy(text("Profile")).click();
+        return new ProfilePage();
     }
 
     @Nonnull
