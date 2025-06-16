@@ -1,4 +1,4 @@
-package guru.qa.niffler.model.page;
+package guru.qa.niffler.model.pageable;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

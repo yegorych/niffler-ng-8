@@ -44,37 +44,68 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
                         .getInputStream());
     }
 
-    @Override
-    public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-        if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
-            AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), ScreenShotTest.class).ifPresent(
-                    annotation -> {
-                        if (annotation.rewriteExpected()){
-                            try {
-                                ImageIO.write(
-                                        getActual(),
-                                        "png",
-                                        new File("src/test/resources/" + annotation.value()));
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-            );
-            ScreenDif screenDif = new ScreenDif(
-                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
-                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
-                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
-            );
-            Allure.addAttachment(
-                    "Screenshot diff",
-                    "application/vnd.allure.image.diff",
-                    objectMapper.writeValueAsString(screenDif)
-            );
+  @Override
+  public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+    final ScreenShotTest screenShotTest = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+    if (screenShotTest != null) {
+      if (screenShotTest.rewriteExpected()) {
+        final BufferedImage actual = getActual();
+        if (actual != null) {
+          ImageIO.write(
+              actual,
+              "png",
+              new File("src/test/resources/" + screenShotTest.value())
+          );
         }
-        throw throwable;
+      }
 
+      if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
+        ScreenDif screenDif = new ScreenDif(
+            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
+            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
+            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
+        );
+
+        Allure.addAttachment(
+            "Screenshot diff",
+            "application/vnd.allure.image.diff",
+            objectMapper.writeValueAsString(screenDif)
+        );
+      }
     }
+    throw throwable;
+  }
+//    @Override
+//    public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+//        if (throwable.getMessage().contains(ASSERT_SCREEN_MESSAGE)) {
+//            AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), ScreenShotTest.class).ifPresent(
+//                    annotation -> {
+//                        if (annotation.rewriteExpected()){
+//                            try {
+//                                ImageIO.write(
+//                                        getActual(),
+//                                        "png",
+//                                        new File("src/test/resources/" + annotation.value()));
+//                            } catch (IOException e) {
+//                                throw new RuntimeException(e);
+//                            }
+//                        }
+//                    }
+//            );
+//            ScreenDif screenDif = new ScreenDif(
+//                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
+//                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
+//                    "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
+//            );
+//            Allure.addAttachment(
+//                    "Screenshot diff",
+//                    "application/vnd.allure.image.diff",
+//                    objectMapper.writeValueAsString(screenDif)
+//            );
+//        }
+//        throw throwable;
+//
+//    }
 
     public static void setExpected(BufferedImage expected) {
         TestsMethodContextExtension.context().getStore(NAMESPACE).put("expected", expected);
