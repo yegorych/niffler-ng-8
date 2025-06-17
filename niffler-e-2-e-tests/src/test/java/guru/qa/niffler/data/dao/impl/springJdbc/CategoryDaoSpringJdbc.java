@@ -4,29 +4,30 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+@ParametersAreNonnullByDefault
 
 public class CategoryDaoSpringJdbc implements CategoryDao {
     private static final Config CFG = Config.getInstance();
 
+    @NotNull
     @Override
     public CategoryEntity create(CategoryEntity category) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
@@ -39,11 +40,12 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
             ps.setBoolean(3, category.isArchived());
             return ps;
         }, keyHolder);
-        final UUID generatedKey = (UUID) keyHolder.getKeys().get("id");
+        final UUID generatedKey = (UUID) Objects.requireNonNull(keyHolder.getKeys()).get("id");
         category.setId(generatedKey);
         return category;
     }
 
+    @NotNull
     @Override
     public CategoryEntity update(CategoryEntity category) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -60,6 +62,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
         return category;
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -72,6 +75,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
         );
     }
 
+    @NotNull
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -107,6 +111,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 //        }
 //    }
 
+    @NotNull
     @Override
     public List<CategoryEntity> findAllByUsername(String username) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
@@ -126,6 +131,7 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
         );
     }
 
+    @NotNull
     @Override
     public List<CategoryEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));

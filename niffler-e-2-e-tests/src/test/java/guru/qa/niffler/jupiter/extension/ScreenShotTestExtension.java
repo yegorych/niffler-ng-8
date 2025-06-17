@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.springframework.core.io.ClassPathResource;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -16,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 
+@ParametersAreNonnullByDefault
 public class ScreenShotTestExtension implements ParameterResolver, TestExecutionExceptionHandler {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ScreenShotTestExtension.class);
     public static final String ASSERT_SCREEN_MESSAGE = "Screen comparison failure";
@@ -30,6 +34,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
 
     @SneakyThrows
     @Override
+    @Nonnull
     public BufferedImage resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return ImageIO.read(
                 new ClassPathResource(
@@ -74,7 +79,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     public static void setExpected(BufferedImage expected) {
         TestsMethodContextExtension.context().getStore(NAMESPACE).put("expected", expected);
     }
-
+    @Nullable
     public static BufferedImage getExpected() {
         return TestsMethodContextExtension.context().getStore(NAMESPACE).get("expected", BufferedImage.class);
     }
@@ -82,7 +87,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     public static void setActual(BufferedImage actual) {
         TestsMethodContextExtension.context().getStore(NAMESPACE).put("actual", actual);
     }
-
+    @Nullable
     public static BufferedImage getActual() {
         return TestsMethodContextExtension.context().getStore(NAMESPACE).get("actual", BufferedImage.class);
     }
@@ -90,7 +95,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     public static void setDiff(BufferedImage diff) {
         TestsMethodContextExtension.context().getStore(NAMESPACE).put("diff", diff);
     }
-
+    @Nullable
     public static BufferedImage getDiff() {
         return TestsMethodContextExtension.context().getStore(NAMESPACE).get("diff", BufferedImage.class);
     }

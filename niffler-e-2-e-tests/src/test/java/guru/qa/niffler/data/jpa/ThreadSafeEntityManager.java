@@ -18,6 +18,7 @@ import jakarta.persistence.metamodel.Metamodel;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("resource")
 public class ThreadSafeEntityManager implements EntityManager {
 
   private final ThreadLocal<EntityManager> threadEm = new ThreadLocal<>();

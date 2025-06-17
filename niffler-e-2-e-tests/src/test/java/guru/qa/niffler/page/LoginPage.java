@@ -1,21 +1,25 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
+
+import javax.annotation.Nonnull;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-public class LoginPage {
+@Nonnull
+public class LoginPage extends BasePage<LoginPage> {
 
-  private final String BAD_CREDENTIALS_ERROR_MESSAGE = "Неверные учетные данные пользователя";
+  private final static String BAD_CREDENTIALS_ERROR_MESSAGE = "Неверные учетные данные пользователя";
   private final SelenideElement usernameInput = $("input[name='username']");
   private final SelenideElement passwordInput = $("input[name='password']");
   private final SelenideElement submitBtn = $("button[type='submit']");
   private final SelenideElement registerBtn = $("a.form__register");
   private final SelenideElement errorMessage = $(".form__error");
 
+  @Nonnull
   public MainPage doLogin(String username, String password) {
     usernameInput.setValue(username);
     passwordInput.setValue(password);
@@ -23,22 +27,32 @@ public class LoginPage {
     return new MainPage();
   }
 
+  @Nonnull
+  @Step("go to registration page")
   public RegisterPage navigateToRegistration() {
     registerBtn.click();
     return new RegisterPage();
 
   }
 
-  public LoginPage assertBadCredentials(){
+  @Step("check bad credentials error")
+  public void assertBadCredentials(){
     errorMessage
             .should(visible)
             .should(text(BAD_CREDENTIALS_ERROR_MESSAGE));
-    return this;
   }
 
+  @Nonnull
+  @Step("check that this is Login page")
   public LoginPage isLoginPage(){
     usernameInput.should(visible);
     passwordInput.should(visible);
     return this;
+  }
+
+  @Override
+  @Step("check that login page loaded")
+  public LoginPage checkThatPageLoaded() {
+    return null;
   }
 }

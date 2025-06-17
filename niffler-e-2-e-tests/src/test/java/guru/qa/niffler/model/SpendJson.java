@@ -72,7 +72,14 @@ public record SpendJson(
                 amount,
                 currency,
                 description,
-                toFrontendDateFormat(spendDate)
+                Date.from(
+                        spendDate.toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+                )
+                //toFrontendDateFormat(spendDate)
         );
     }
 

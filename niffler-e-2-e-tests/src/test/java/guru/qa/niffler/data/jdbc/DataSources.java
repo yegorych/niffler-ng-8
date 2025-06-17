@@ -1,9 +1,11 @@
-package guru.qa.niffler.data.tpl;
+package guru.qa.niffler.data.jdbc;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.p6spy.engine.spy.P6DataSource;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -11,12 +13,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+@ParametersAreNonnullByDefault
 public class DataSources {
   private DataSources() {
   }
 
   private static final Map<String, DataSource> dataSources = new ConcurrentHashMap<>();
 
+  @Nonnull
   public static DataSource dataSource(String jdbcUrl) {
     return dataSources.computeIfAbsent(
         jdbcUrl,

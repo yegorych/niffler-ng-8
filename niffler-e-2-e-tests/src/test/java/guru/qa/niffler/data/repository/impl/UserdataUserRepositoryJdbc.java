@@ -10,23 +10,28 @@ import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
+@SuppressWarnings("resource")
 public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
     private static final Config CFG = Config.getInstance();
     private final UserdataDao userdataDao = new UdUserDaoJdbc();
 
+    @NotNull
     @Override
     public UserEntity create(UserEntity user) {
         return userdataDao.create(user);
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -44,6 +49,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
         }
     }
 
+    @NotNull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(CFG.userdataJdbcUrl()).connection().prepareStatement(
@@ -61,6 +67,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
         }
     }
 
+    @NotNull
     @Override
     public UserEntity update(UserEntity user) {
         return userdataDao.update(user);

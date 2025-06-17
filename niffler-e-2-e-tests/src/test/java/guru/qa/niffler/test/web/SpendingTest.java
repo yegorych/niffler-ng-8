@@ -11,12 +11,18 @@ import guru.qa.niffler.model.Bubble;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.page.EditSpendingPage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 
@@ -37,10 +43,10 @@ public class SpendingTest {
     SpendJson spend = user.testData().spendings().getFirst();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .doLogin(user.username(), user.testData().password())
+        .checkThatPageLoaded()
         .editSpending(spend.description())
-        .editDescription(newDescription);
-
-    new MainPage().checkThatTableContains(newDescription);
+        .editDescription(newDescription).submit()
+        .checkThatTableContains(newDescription);
   }
 
   @User(
@@ -79,7 +85,7 @@ public class SpendingTest {
             .doLogin(user.username(), user.testData().password())
             .getHeader()
             .openMenu()
-            .goToProfilePage()
+            .toProfilePage()
             .uploadPicture("img/avatar.png")
             .assertProfileAvatar(expected);
   }
@@ -141,5 +147,29 @@ public class SpendingTest {
                     )
             );
   }
+
+  @Test
+  @User
+  void addNewSpendTest(UserJson user) {
+    String description = RandomDataUtils.randomSentence(1);
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .doLogin(user.username(), user.testData().password())
+            .getHeader()
+            .addSpendingPage()
+            .editDescription(description)
+            .editAmount("10")
+            .editCategory(RandomDataUtils.randomCategoryName())
+            .submit()
+            .checkAlertMessage("New spending is successfully created")
+            .checkThatPageLoaded()
+            .getSpendingTable()
+            .checkTableSize(1)
+            .checkTableContains(description);
+
+
+
+  }
+
+
 
 }

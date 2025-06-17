@@ -6,8 +6,11 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.utils.ScreenDiffResult;
+import io.qameta.allure.Step;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -21,7 +24,8 @@ import static com.codeborne.selenide.Selenide.$$;
 import static guru.qa.niffler.jupiter.extension.ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class ProfilePage {
+@ParametersAreNonnullByDefault
+public class ProfilePage extends BasePage<ProfilePage> {
     private final ElementsCollection categories = $$(".MuiChip-label");
     private final SelenideElement showArchivedCheckbox = $("[type='checkbox']");
     private final SelenideElement approveArchiveBtn = $(".MuiDialogActions-root").find(byText("Archive"));
@@ -32,15 +36,20 @@ public class ProfilePage {
     private final SelenideElement uploadPictureInput = $("input[type='file']");
     private final SelenideElement saveChangesButton = $("[type='submit']");
     private final SelenideElement avatar = $("#image__input").parent().$("img");
-
+    private final SelenideElement username = $("#username");
+    private final SelenideElement name = $("#name");
     @Getter
     Header header = new Header();
 
+    @Nonnull
+    @Step("show archived categories")
     public ProfilePage showArchivedCategories() {
         showArchivedCheckbox.click();
         return this;
     }
 
+    @Nonnull
+    @Step("archive category with name {0}")
     public ProfilePage archiveCategory(String categoryName) {
         categories.findBy(text(categoryName))
                 .shouldBe(visible)
@@ -51,6 +60,8 @@ public class ProfilePage {
         return this;
     }
 
+    @Nonnull
+    @Step("unarchive category with name {0}")
     public ProfilePage unarchiveCategory(String categoryName) {
         categories.findBy(text(categoryName))
                 .shouldBe(visible)
@@ -61,16 +72,17 @@ public class ProfilePage {
         return this;
     }
 
-    public ProfilePage approveArchiveCategory() {
+    @Step("approve category archiving")
+    public void approveArchiveCategory() {
         approveArchiveBtn.click();
-        return this;
     }
 
-    public ProfilePage approveUnarchiveCategory() {
+    @Step("approve category unarchiving")
+    public void approveUnarchiveCategory() {
         approveUnarchiveBtn.click();
-        return this;
     }
 
+    @Step("check that category is archived")
     public void assertCategoryIsArchived(String categoryName) {
         assertAlertMessage("Category %s is archived".formatted(categoryName));
         categories.findBy(text(categoryName)).shouldNot(visible);
@@ -78,24 +90,29 @@ public class ProfilePage {
         categories.findBy(text(categoryName)).should(visible);
     }
 
+    @Step("check that category is unarchived")
     public void assertCategoryIsUnarchived(String categoryName) {
         assertAlertMessage("Category %s is unarchived".formatted(categoryName));
         categories.findBy(text(categoryName)).should(visible);
     }
 
+    @Nonnull
+    @Step("upload new profile photo")
     public ProfilePage uploadPicture(String pathToImage) {
         uploadPictureInput.uploadFromClasspath(pathToImage);
         saveChangesButton.click();
         return this;
     }
 
+    @Step("check that alert message has text {0}")
     private void assertAlertMessage(String message) {
         categoryArchivingMessage
                 .should(Condition.appear)
                 .should(text(message));
     }
 
-    public ProfilePage assertProfileAvatar(BufferedImage expectedImage) throws IOException {
+    @Step("check profile photo")
+    public void assertProfileAvatar(BufferedImage expectedImage) throws IOException {
         Selenide.sleep(1000);
         BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
         assertFalse(new ScreenDiffResult(
@@ -103,9 +120,30 @@ public class ProfilePage {
                 actualImage
         ),
             ASSERT_SCREEN_MESSAGE);
+    }
+
+    @Nonnull
+    @Step("update username")
+    public ProfilePage updateUsername(String newUsername) {
+        username.clear();
+        username.sendKeys(newUsername);
+        saveChangesButton.click();
+        return this;
+    }
+
+    @Nonnull
+    @Step("update name")
+    public ProfilePage updateName(String newName) {
+        name.clear();
+        name.sendKeys(newName);
+        saveChangesButton.click();
         return this;
     }
 
 
-
+    @Override
+    @Step("check that profile page loaded")
+    public ProfilePage checkThatPageLoaded() {
+        return null;
+    }
 }
