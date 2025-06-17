@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.codeborne.selenide.CheckResult.accepted;
-import static com.codeborne.selenide.Selenide.$$;
 
 public class SpendConditions {
     public record SpendFront(String category, Double amount, CurrencyValues currency, String description, String date) {}
@@ -42,7 +41,8 @@ public class SpendConditions {
                 }
 
                 List<SpendFront> actualSpendsFrontList = elements.stream().map(el -> {
-                    ElementsCollection spend = $$(el.findElements(By.tagName("td")));
+                    //ElementsCollection spend = $$(el.findElements(By.tagName("td")));
+                    ElementsCollection spend = new ElementsCollection(driver, By.tagName("td"));
                     String categoryName = spend.get(1).getText();
                     String[] amountWithCurrency = spend.get(2).getText().split(" ");
                     Double amount = Double.parseDouble(amountWithCurrency[0]);

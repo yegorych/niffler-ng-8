@@ -1,9 +1,10 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
+
 
 public class RegisterPage {
     private static final String USERNAME_LENGTH_ERROR_MESSAGE = "Allowed username length should be from 3 to 50 characters";
@@ -11,13 +12,21 @@ public class RegisterPage {
     private static final String PASSWORD_LENGTH_ERROR_MESSAGE = "Allowed password length should be from 3 to 12 characters";
     private static final String PASSWORD_EQUAL_ERROR_MESSAGE = "Passwords should be equal";
 
-    private final SelenideElement username = $("input#username");
-    private final SelenideElement password = $("input#password");
-    private final SelenideElement passwordSubmit = $("input#passwordSubmit");
-    private final SelenideElement signUpBtn = $("button.form__submit");
-    private final SelenideElement signInBtn = $("a.form_sign-in");
-    
-    
+    private final SelenideElement username;
+    private final SelenideElement password;
+    private final SelenideElement passwordSubmit;
+    private final SelenideElement signUpBtn;
+    private final SelenideElement signInBtn;
+    private final SelenideDriver driver;
+
+    public RegisterPage(SelenideDriver driver) {
+        this.driver = driver;
+        username = driver.$("input#username");
+        password = driver.$("input#password");
+        passwordSubmit = driver.$("input#passwordSubmit");
+        signUpBtn = driver.$("button.form__submit");
+        signInBtn = driver.$("a.form_sign-in");
+    }
 
     public RegisterPage setUsername(String username) {
         this.username.sendKeys(username);
@@ -41,7 +50,7 @@ public class RegisterPage {
 
     public LoginPage goToLoginPage() {
         signInBtn.click();
-        return new LoginPage();
+        return new LoginPage(driver);
     }
 
     public RegisterPage assertRegistrationSuccess(){
@@ -50,22 +59,22 @@ public class RegisterPage {
     }
 
     public RegisterPage assertUsernameLength(){
-        $(byText(USERNAME_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
+        driver.$(byText(USERNAME_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
         return this;
     }
 
     public RegisterPage assertUsernameUniq(String username){
-        $(byText(USERNAME_EXISTS_ERROR_MESSAGE.formatted(username))).should(Condition.visible);
+        driver.$(byText(USERNAME_EXISTS_ERROR_MESSAGE.formatted(username))).should(Condition.visible);
         return this;
     }
 
     public RegisterPage assertPasswordLength(){
-        $(byText(PASSWORD_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
+        driver.$(byText(PASSWORD_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
         return this;
     }
 
     public RegisterPage assertPasswordEqual(){
-        $(byText(PASSWORD_EQUAL_ERROR_MESSAGE)).should(Condition.visible);
+        driver.$(byText(PASSWORD_EQUAL_ERROR_MESSAGE)).should(Condition.visible);
         return this;
     }
 
