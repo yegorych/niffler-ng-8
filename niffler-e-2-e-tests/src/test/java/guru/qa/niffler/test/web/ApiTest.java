@@ -3,6 +3,7 @@ package guru.qa.niffler.test.web;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.client.UsersClient;
 import guru.qa.niffler.service.impl.UsersApiClient;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ApiTest {
@@ -10,5 +11,6 @@ public class ApiTest {
     void authApiTest() {
         UsersClient usersClient = new UsersApiClient();
         UserJson userJson = usersClient.createUser("duck99", "12345");
+        Assertions.assertNotNull(userJson.id());
     }
 }

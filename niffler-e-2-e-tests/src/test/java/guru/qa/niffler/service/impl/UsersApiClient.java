@@ -8,22 +8,14 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserApi;
 import guru.qa.niffler.service.client.AuthClient;
 import guru.qa.niffler.service.client.UsersClient;
-import org.jetbrains.annotations.NotNull;
 import org.apache.commons.lang3.time.StopWatch;
-
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @ParametersAreNonnullByDefault
 public class UsersApiClient extends RestClient implements UsersClient{
     private static final Config CFG = Config.getInstance();
-//    private final OkHttpClient client = new OkHttpClient.Builder()
-//            .addNetworkInterceptor(
-//                    new CustomAllureOkHttpInterceptor()
-//                            .setRequestTemplate("http-request.ftl")
-//                            .setResponseTemplate("http-response.ftl")
-//            ).build();
 
     private final UserApi userApi = create(UserApi.class);
 
