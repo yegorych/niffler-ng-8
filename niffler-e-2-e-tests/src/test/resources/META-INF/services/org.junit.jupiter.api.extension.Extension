@@ -1,3 +1,4 @@
+guru.qa.niffler.jupiter.extension.CookiesExtension
 guru.qa.niffler.jupiter.extension.DatabasesExtension
 guru.qa.niffler.jupiter.extension.TestsMethodContextExtension
 guru.qa.niffler.jupiter.extension.AllureBackendLogsExtension

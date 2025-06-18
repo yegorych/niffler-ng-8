@@ -4,6 +4,7 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -82,7 +83,7 @@ public class FriendPage extends BasePage<FriendPage> {
     @Override
     @Step("check that friend page loaded")
     public FriendPage checkThatPageLoaded() {
-        return null;
+        throw new NotImplementedException("This method has not been implemented yet");
     }
 
     private void findFriend(String username) {
