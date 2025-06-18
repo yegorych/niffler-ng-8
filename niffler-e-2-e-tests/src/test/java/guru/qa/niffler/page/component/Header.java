@@ -14,30 +14,20 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class Header {
-    private final SelenideElement self = $("#root header");
+public class Header extends BaseComponent<Header> {
     private final SelenideElement menu = self.$("[aria-label='Menu']");
     private final ElementsCollection menuItems = self.parent().parent().$$("[role='menuitem']");
     private final Dialog dialog = new Dialog();
 
-    @Nonnull
-    @Step("Go to profile page")
-    public ProfilePage toProfilePage() {
-        menuItems.findBy(text("Profile")).click();
-        return new ProfilePage();
-    }
-
-    @Nonnull
-    @Step("Go to All People page")
-    public PeoplePage toAllPeoplesPage() {
-        menuItems.findBy(text("All People")).click();
-        return new PeoplePage();
+    public Header() {
+    super($("#root header"));
     }
 
     @Nonnull
     @Step("Go to Friends page")
     public FriendPage toFriendsPage() {
         menuItems.findBy(text("Friends")).click();
+        //menuItems.$("a[href='/people/friends']").click();
         return new FriendPage();
     }
 
@@ -61,6 +51,20 @@ public class Header {
     public MainPage toMainPage() {
         self.$("a[href='/main']").click();
         return new MainPage();
+    }
+
+    @Nonnull
+    @Step("Go to all people page")
+    public PeoplePage toAllPeoplesPage() {
+        menuItems.findBy(text("All People")).click();
+        return new PeoplePage();
+    }
+
+    @Nonnull
+    @Step("Go to profile page")
+    public ProfilePage toProfilePage() {
+        menuItems.findBy(text("Profile")).click();
+        return new ProfilePage();
     }
 
     @Nonnull

@@ -13,7 +13,7 @@ import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UsersClient;
+import guru.qa.niffler.service.client.UsersClient;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;

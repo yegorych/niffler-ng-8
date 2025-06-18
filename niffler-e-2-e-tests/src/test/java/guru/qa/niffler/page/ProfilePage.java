@@ -8,6 +8,7 @@ import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 import lombok.Getter;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -144,6 +145,6 @@ public class ProfilePage extends BasePage<ProfilePage> {
     @Override
     @Step("check that profile page loaded")
     public ProfilePage checkThatPageLoaded() {
-        return null;
+        throw new NotImplementedException("This method has not been implemented yet");
     }
 }

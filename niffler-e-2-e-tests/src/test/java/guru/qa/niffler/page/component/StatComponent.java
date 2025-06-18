@@ -22,10 +22,14 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
-public class StatComponent {
+public class StatComponent extends BaseComponent<StatComponent> {
 
     private final ElementsCollection bubbles = $("#legend-container").$$("li");
     private final SelenideElement chart = $("canvas[role='img']");
+
+    public StatComponent() {
+        super($("#stat"));
+    }
 
     @Step("Check that statistic bubbles contain texts {0}")
     @Nonnull

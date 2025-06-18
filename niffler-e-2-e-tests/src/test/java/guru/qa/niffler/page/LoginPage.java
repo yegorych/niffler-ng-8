@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
 
@@ -17,7 +18,6 @@ public class LoginPage extends BasePage<LoginPage> {
   private final SelenideElement passwordInput = $("input[name='password']");
   private final SelenideElement submitBtn = $("button[type='submit']");
   private final SelenideElement registerBtn = $("a.form__register");
-  private final SelenideElement errorMessage = $(".form__error");
 
   @Nonnull
   public MainPage doLogin(String username, String password) {
@@ -37,9 +37,7 @@ public class LoginPage extends BasePage<LoginPage> {
 
   @Step("check bad credentials error")
   public void assertBadCredentials(){
-    errorMessage
-            .should(visible)
-            .should(text(BAD_CREDENTIALS_ERROR_MESSAGE));
+    checkFormErrorMessage(BAD_CREDENTIALS_ERROR_MESSAGE);
   }
 
   @Nonnull
@@ -53,6 +51,6 @@ public class LoginPage extends BasePage<LoginPage> {
   @Override
   @Step("check that login page loaded")
   public LoginPage checkThatPageLoaded() {
-    return null;
+    throw new NotImplementedException("This method has not been implemented yet");
   }
 }

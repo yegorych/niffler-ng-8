@@ -7,6 +7,7 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import io.qameta.allure.Step;
 import lombok.Getter;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,7 +28,6 @@ public class PeoplePage extends BasePage<PeoplePage> {
 
     @Step("check invitation requests from {0}")
     public void assertHasInvitationRequests(String... usernames) {
-        Selenide.sleep(5000);
         for (String username : usernames) {
             findPeople(username);
             invitationRequests.find(text(username)).should(Condition.visible);
@@ -46,6 +46,6 @@ public class PeoplePage extends BasePage<PeoplePage> {
     @Override
     @Step("check that people page loaded")
     public PeoplePage checkThatPageLoaded() {
-        return null;
+        throw new NotImplementedException("This method has not been implemented yet");
     }
 }
