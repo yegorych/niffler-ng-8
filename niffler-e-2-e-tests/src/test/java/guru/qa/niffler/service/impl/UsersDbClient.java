@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
@@ -54,6 +55,11 @@ public class UsersDbClient implements UsersClient {
             }
     ));
   }
+
+    @Override
+    public List<UserJson> allUsersWithout(String username) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     @Override
     public void createFriends(UserJson targetUser, int count) {

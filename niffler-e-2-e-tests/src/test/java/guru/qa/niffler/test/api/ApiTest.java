@@ -1,4 +1,4 @@
-package guru.qa.niffler.test.web;
+package guru.qa.niffler.test.api;
 
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.client.UsersClient;
