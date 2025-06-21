@@ -1,6 +1,7 @@
-package guru.qa.niffler.api;
+package guru.qa.niffler.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import guru.qa.niffler.api.GhApi;
 import guru.qa.niffler.api.core.RestClient;
 import retrofit2.Response;
 

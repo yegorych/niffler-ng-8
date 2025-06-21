@@ -4,8 +4,9 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.MainPage;
 import org.junit.jupiter.api.Test;
 
 
@@ -18,6 +19,7 @@ public class FriendsWebTest {
     void friendShouldBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
+                .submit(new MainPage())
                 .getHeader()
                 .openMenu()
                 .toFriendsPage()
@@ -35,6 +37,7 @@ public class FriendsWebTest {
     void friendsTableShouldBeEmptyForNewUser(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
+                .submit(new MainPage())
                 .getHeader()
                 .openMenu()
                 .toFriendsPage()
@@ -46,11 +49,12 @@ public class FriendsWebTest {
     void incomeInvitationBePresentInFriendsTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
+                .submit(new MainPage())
                 .getHeader()
                 .openMenu()
                 .toFriendsPage()
                 .assertHasRequests(
-                        user.testData().friendshipAddressees()
+                        user.testData().incomeInvitations()
                                 .stream()
                                 .map(UserJson::username)
                                 .toArray(String[]::new)
@@ -62,11 +66,12 @@ public class FriendsWebTest {
     void outcomeInvitationBePresentInAllPeoplesTable(UserJson user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
+                .submit(new MainPage())
                 .getHeader()
                 .openMenu()
                 .toAllPeoplesPage()
                 .assertHasInvitationRequests(
-                        user.testData().friendshipRequests()
+                        user.testData().outcomeInvitations()
                                 .stream()
                                 .map(UserJson::username)
                                 .toArray(String[]::new)
@@ -79,13 +84,14 @@ public class FriendsWebTest {
     @Test
     @User(incomeInvitations = 1)
     void acceptFriendRequestTest(UserJson user) {
-        String friendshipRequestName = user.testData().friendshipAddressees()
+        String friendshipRequestName = user.testData().incomeInvitations()
                 .stream()
                 .map(UserJson::username)
                 .findFirst().orElseThrow();
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
+                .submit(new MainPage())
                 .getHeader()
                 .openMenu()
                 .toFriendsPage()
@@ -97,13 +103,14 @@ public class FriendsWebTest {
     @Test
     @User(incomeInvitations = 1)
     void declineFriendRequestTest(UserJson user) {
-        String friendshipRequestName = user.testData().friendshipAddressees()
+        String friendshipRequestName = user.testData().incomeInvitations()
                 .stream()
                 .map(UserJson::username)
                 .findFirst().orElseThrow();
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
+                .submit(new MainPage())
                 .getHeader()
                 .openMenu()
                 .toFriendsPage()

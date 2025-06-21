@@ -4,7 +4,7 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 public class RegistrationTest {
     private static final Config CFG = Config.getInstance();
     RegisterPage registerPage;
-    
+
     @BeforeEach
     public void before() {
         registerPage = Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -28,7 +28,7 @@ public class RegistrationTest {
     @Test
     void shouldRegisterNewUser() {
         String username = randomUsername();
-        String password = randomPassword();
+        String password = "12345";
 
         registerPage
                 .setUsername(username)

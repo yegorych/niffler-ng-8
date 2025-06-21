@@ -4,9 +4,8 @@ package guru.qa.niffler.service.impl;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.service.UserApi;
-import guru.qa.niffler.service.client.AuthClient;
+import guru.qa.niffler.model.rest.UserJson;
+import guru.qa.niffler.api.UserApi;
 import guru.qa.niffler.service.client.UsersClient;
 import org.apache.commons.lang3.time.StopWatch;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,7 @@ public class UsersApiClient extends RestClient implements UsersClient{
     public UsersApiClient() {
         super(CFG.userdataUrl());
     }
-    private final AuthClient authClient = new AuthApiClient();
+    private final AuthApiClient authClient = new AuthApiClient();
 
 
 
@@ -48,17 +47,17 @@ public class UsersApiClient extends RestClient implements UsersClient{
     }
 
     @Override
-    public void createIncomeInvitations(UserJson targetUser, int count) {
+    public List<UserJson> addIncomeInvitations(UserJson targetUser, int count) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void createOutcomeInvitations(UserJson targetUser, int count) {
+    public List<UserJson> addOutcomeInvitations(UserJson targetUser, int count) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void createFriends(UserJson targetUser, int count) {
+    public List<UserJson> addFriends(UserJson targetUser, int count) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

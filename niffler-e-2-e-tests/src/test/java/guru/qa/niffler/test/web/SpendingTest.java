@@ -9,9 +9,8 @@ import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.Bubble;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.EditSpendingPage;
+import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.RandomDataUtils;
@@ -19,10 +18,6 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 
@@ -43,6 +38,7 @@ public class SpendingTest {
     SpendJson spend = user.testData().spendings().getFirst();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .doLogin(user.username(), user.testData().password())
+        .submit(new MainPage())
         .checkThatPageLoaded()
         .editSpending(spend.description())
         .editDescription(newDescription).submit()
@@ -68,6 +64,7 @@ public class SpendingTest {
     List<SpendJson> spendings = user.testData().spendings();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
+            .submit(new MainPage())
             .checkThatPageLoaded()
             .assertSpending(spendings.toArray(SpendJson[]::new))
             .getStatComponent()
@@ -80,9 +77,10 @@ public class SpendingTest {
 
   @User
   @ScreenShotTest(value = "img/expected-avatar.png", rewriteExpected = true)
-  void avatarDisplayTest(UserJson user, BufferedImage expected) throws IOException, InterruptedException {
+  void avatarDisplayTest(UserJson user, BufferedImage expected) throws IOException {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
+            .submit(new MainPage())
             .getHeader()
             .openMenu()
             .toProfilePage()
@@ -103,6 +101,7 @@ public class SpendingTest {
     SpendJson spend = user.testData().spendings().getFirst();
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
+            .submit(new MainPage())
             .deleteSpending(spend.description())
             .getStatComponent()
             .checkStatisticImage(expected)
@@ -133,6 +132,7 @@ public class SpendingTest {
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
+            .submit(new MainPage())
             .editSpending(spend.description())
             .editAmount(newAmount.toString())
             .submit()
@@ -154,6 +154,7 @@ public class SpendingTest {
     String description = RandomDataUtils.randomSentence(1);
     Selenide.open(CFG.frontUrl(), LoginPage.class)
             .doLogin(user.username(), user.testData().password())
+            .submit(new MainPage())
             .getHeader()
             .addSpendingPage()
             .editDescription(description)

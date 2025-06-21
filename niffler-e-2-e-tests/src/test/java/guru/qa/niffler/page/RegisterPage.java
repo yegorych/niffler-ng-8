@@ -69,19 +69,20 @@ public class RegisterPage extends BasePage<RegisterPage> {
 
     @Step("check username uniq")
     public void assertUsernameUniq(String username){
-        checkFormErrorMessage(USERNAME_EXISTS_ERROR_MESSAGE.formatted(username));
+        $(byText(USERNAME_EXISTS_ERROR_MESSAGE.formatted(username))).should(Condition.visible);
     }
 
     @Nonnull
     @Step("check password length")
-    public RegisterPage assertPasswordLength(){
-        return checkFormErrorMessage(PASSWORD_LENGTH_ERROR_MESSAGE);
-        //$(byText(PASSWORD_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
+    public void assertPasswordLength(){
+        //return checkFormErrorMessage(PASSWORD_LENGTH_ERROR_MESSAGE);
+        $(byText(PASSWORD_LENGTH_ERROR_MESSAGE)).should(Condition.visible);
+
     }
 
     @Step("check error about password mismatch is visible")
     public void assertPasswordEqual(){
-        checkFormErrorMessage(PASSWORD_EQUAL_ERROR_MESSAGE);
+        $(byText(PASSWORD_EQUAL_ERROR_MESSAGE)).should(Condition.visible);
     }
 
 

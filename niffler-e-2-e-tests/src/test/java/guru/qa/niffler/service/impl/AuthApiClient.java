@@ -1,12 +1,12 @@
 package guru.qa.niffler.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.api.core.CodeInterceptor;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
+import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.utils.OAuthUtils;
 import lombok.SneakyThrows;
 import retrofit2.Response;
@@ -55,12 +55,12 @@ public class AuthApiClient extends RestClient {
     return tokenResponse.body().get("id_token").asText();
   }
 
-    @Override
+
     public void requestRegisterForm() {
-        executeCall(authApi.register());
+        executeCall(authApi.requestRegisterForm());
     }
 
-    @Override
+
     public void register(String username, String password) {
         executeCall(authApi.register(
                 username,

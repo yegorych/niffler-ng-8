@@ -1,6 +1,6 @@
 package guru.qa.niffler.service.client;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.UsersApiClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 
@@ -20,8 +20,8 @@ public interface UsersClient{
   @Nonnull
   UserJson createUser(String username, String password);
   List<UserJson> allUsersWithout(String username);
-  void createIncomeInvitations(UserJson targetUser, int count);
-  void createOutcomeInvitations(UserJson targetUser, int count);
-  void createFriends(UserJson targetUser, int count);
+  List<UserJson> addIncomeInvitations(UserJson targetUser, int count);
+  List<UserJson> addOutcomeInvitations(UserJson targetUser, int count);
+  List<UserJson> addFriends(UserJson targetUser, int count);
 
 }

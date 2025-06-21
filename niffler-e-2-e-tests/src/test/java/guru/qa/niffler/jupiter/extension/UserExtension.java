@@ -1,15 +1,17 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.client.UsersClient;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
+import java.util.ArrayList;
+import java.util.List;
 
 import static guru.qa.niffler.jupiter.extension.TestsMethodContextExtension.context;
 
@@ -40,13 +42,13 @@ public class UserExtension implements
             List<UserJson> outcome = new ArrayList<>();
 
             if (userAnno.friends() > 0) {
-              friends = usersClient.addFriend(user, userAnno.friends());
+              friends = usersClient.addFriends(user, userAnno.friends());
             }
             if (userAnno.incomeInvitations() > 0) {
-              income = usersClient.addIncomeInvitation(user, userAnno.incomeInvitations());
+              income = usersClient.addIncomeInvitations(user, userAnno.incomeInvitations());
             }
             if (userAnno.outcomeInvitations() > 0) {
-              outcome = usersClient.addOutcomeInvitation(user, userAnno.outcomeInvitations());
+              outcome = usersClient.addOutcomeInvitations(user, userAnno.outcomeInvitations());
             }
 
             setUser(

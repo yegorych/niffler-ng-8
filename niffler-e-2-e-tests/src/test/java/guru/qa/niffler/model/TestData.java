@@ -1,7 +1,8 @@
 package guru.qa.niffler.model;
 
-import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
-import lombok.Builder;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.UserJson;
 
 import java.util.ArrayList;
 import java.util.List;

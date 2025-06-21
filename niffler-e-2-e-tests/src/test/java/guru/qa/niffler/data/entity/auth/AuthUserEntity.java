@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.entity.auth;
 
-import guru.qa.niffler.model.AuthUserJson;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
