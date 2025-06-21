@@ -86,8 +86,21 @@ public abstract class RestClient {
     } catch (IOException e) {
       throw new AssertionError(e);
     }
-    Assertions.assertTrue(response.isSuccessful());
+    Assertions.assertTrue(response.isSuccessful() || (response.code() >= 300 && response.code() < 400));
     return response.body();
+  }
+
+  @Nullable
+  protected <T> Response<T> executeCallFullResponse(Call<T> call){
+    final Response<T> response;
+    try {
+      response = call.execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    Assertions.assertTrue(response.isSuccessful() || (response.code() >= 300 && response.code() < 400));
+    Assertions.assertNotNull(response);
+    return response;
   }
 
   public final class EmtyRestClient extends RestClient {

@@ -67,6 +67,7 @@ public record UserJson(
   }
 
   public UserJson withPassword(String password) {
+      //if (testData != null) {
       return withTestData(
               new TestData(
                       password,
@@ -77,6 +78,17 @@ public record UserJson(
                       testData.incomeInvitations()
               )
       );
+
+//      else return withTestData(
+//              new TestData(
+//                      password,
+//                      new ArrayList<>(),
+//                      new ArrayList<>(),
+//                      new ArrayList<>(),
+//                      new ArrayList<>(),
+//                      new ArrayList<>()
+//              )
+//      );
   }
 
     public UserJson withUsers(List<UserJson> friends,
