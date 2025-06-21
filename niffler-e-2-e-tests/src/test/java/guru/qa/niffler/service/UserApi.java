@@ -7,6 +7,8 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
+import java.util.List;
+
 public interface UserApi {
     @POST("/internal/invitations/send")
     Call<Void> sendInvitation(@Query("username") String username, @Query("targetUsername") String targetUsername);
@@ -22,4 +24,7 @@ public interface UserApi {
 
     @GET("/internal/users/current")
     Call<UserJson> current(@Query("username") String username);
+
+    @GET("/internal/users/all")
+    Call<List<UserJson>> all(@Query("username") String username);
 }

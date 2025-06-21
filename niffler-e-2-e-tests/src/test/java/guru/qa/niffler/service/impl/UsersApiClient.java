@@ -11,6 +11,7 @@ import guru.qa.niffler.service.client.UsersClient;
 import org.apache.commons.lang3.time.StopWatch;
 import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @ParametersAreNonnullByDefault
@@ -39,6 +40,11 @@ public class UsersApiClient extends RestClient implements UsersClient{
             } else Selenide.sleep(100);
         }
         throw new IllegalStateException("Could not register user");
+    }
+
+    @Override
+    public List<UserJson> allUsersWithout(String username) {
+        return executeCall(userApi.all(username));
     }
 
     @Override
