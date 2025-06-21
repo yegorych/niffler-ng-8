@@ -14,8 +14,6 @@ import org.junit.jupiter.api.Test;
 @WebTest
 public class ProfileTest {
     private static final Config CFG = Config.getInstance();
-    private final String username = "yegor";
-    private final String password = "12345";
 
 
     @User(
