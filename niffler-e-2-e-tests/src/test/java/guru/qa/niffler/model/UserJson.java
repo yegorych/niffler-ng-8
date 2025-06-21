@@ -55,16 +55,29 @@ public record UserJson(
   }
 
   public UserJson withPassword(String password) {
-      return withTestData(
+      if (testData != null) {
+          return withTestData(
+                  new TestData(
+                          password,
+                          testData.categories(),
+                          testData.spendings(),
+                          testData.friendshipRequests(),
+                          testData.friendshipAddressees(),
+                          testData.friends()
+                  )
+          );
+      }
+      else return withTestData(
               new TestData(
                       password,
-                      testData.categories(),
-                      testData.spendings(),
-                      testData.friendshipRequests(),
-                      testData.friendshipAddressees(),
-                      testData.friends()
+                      new ArrayList<>(),
+                      new ArrayList<>(),
+                      new ArrayList<>(),
+                      new ArrayList<>(),
+                      new ArrayList<>()
               )
       );
+
   }
 
     public UserJson withTestData(TestData testData) {
