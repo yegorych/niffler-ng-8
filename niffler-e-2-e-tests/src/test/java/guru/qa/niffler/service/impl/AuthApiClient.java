@@ -9,7 +9,9 @@ import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import guru.qa.niffler.api.AuthApi;
 import guru.qa.niffler.utils.OAuthUtils;
 import lombok.SneakyThrows;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 
 public class AuthApiClient extends RestClient {
@@ -18,14 +20,14 @@ public class AuthApiClient extends RestClient {
   private final AuthApi authApi;
 
   public AuthApiClient() {
-    super(CFG.authUrl(), true, new CodeInterceptor());
+    super(CFG.authUrl(), true, JacksonConverterFactory.create(), HttpLoggingInterceptor.Level.HEADERS, new CodeInterceptor());
     this.authApi = create(AuthApi.class);
   }
 
   @SneakyThrows
   public String login(String username, String password) {
     final String codeVerifier = OAuthUtils.generateCodeVerifier();
-    final String codeChallenge = OAuthUtils.generateCodeChallange(codeVerifier);
+    final String codeChallenge = OAuthUtils.generateCodeChallenge(codeVerifier);
     final String redirectUri = CFG.frontUrl() + "authorized";
     final String clientId = "client";
 

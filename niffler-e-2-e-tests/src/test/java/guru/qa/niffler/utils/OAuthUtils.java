@@ -23,7 +23,7 @@ public class OAuthUtils {
 
   @SneakyThrows
   @Nonnull
-  public static String generateCodeChallange(String codeVerifier) {
+  public static String generateCodeChallenge(String codeVerifier) {
     byte[] bytes = codeVerifier.getBytes(StandardCharsets.US_ASCII);
     MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
     messageDigest.update(bytes, 0, bytes.length);

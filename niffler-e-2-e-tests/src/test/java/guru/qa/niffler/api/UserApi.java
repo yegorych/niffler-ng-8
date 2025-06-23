@@ -26,5 +26,8 @@ public interface UserApi {
     Call<UserJson> current(@Query("username") String username);
 
     @GET("/internal/users/all")
-    Call<List<UserJson>> all(@Query("username") String username);
+    Call<List<UserJson>> getUsers(@Query("username") String username);
+
+    @GET("/internal/friends/all")
+    Call<List<UserJson>> getFriends(@Query("username") String username);
 }

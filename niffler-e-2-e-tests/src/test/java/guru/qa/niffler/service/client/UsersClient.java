@@ -20,6 +20,9 @@ public interface UsersClient{
   @Nonnull
   UserJson createUser(String username, String password);
   List<UserJson> allUsersWithout(String username);
+  List<UserJson> getFriends(String username);
+  List<UserJson> getIncomeInvitations(String username);
+  List<UserJson> getOutcomeInvitations(String username);
   List<UserJson> addIncomeInvitations(UserJson targetUser, int count);
   List<UserJson> addOutcomeInvitations(UserJson targetUser, int count);
   List<UserJson> addFriends(UserJson targetUser, int count);

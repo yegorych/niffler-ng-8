@@ -63,6 +63,21 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
+    public List<UserJson> getFriends(String username) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<UserJson> getIncomeInvitations(String username) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<UserJson> getOutcomeInvitations(String username) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public List<UserJson> addFriends(UserJson targetUser, int count) {
         List<UserJson> friends = new ArrayList<>();
         if (count > 0) {
