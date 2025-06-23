@@ -7,18 +7,21 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.model.TestData;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.service.client.SpendClient;
+import guru.qa.niffler.service.client.UsersClient;
 import guru.qa.niffler.service.impl.AuthApiClient;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import guru.qa.niffler.service.impl.SpendApiClient;
+import guru.qa.niffler.service.impl.UsersApiClient;
+import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 import static guru.qa.niffler.jupiter.extension.TestsMethodContextExtension.context;
 
@@ -29,6 +32,8 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApiLoginExtension.class);
 
   private final AuthApiClient authApiClient = new AuthApiClient();
+  private final SpendClient spendClient = new SpendApiClient();
+  private final UsersClient usersClient = new UsersApiClient();
   private final boolean setupBrowser;
 
   private ApiLoginExtension(boolean setupBrowser) {
@@ -36,7 +41,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
   }
 
   public ApiLoginExtension() {
-    this.setupBrowser = true;
+    this(true);
   }
 
   public static ApiLoginExtension restApiLoginExtension() {
@@ -56,12 +61,26 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
             }
             userToLogin = userFromUserExtension;
           } else {
+            String apiLoginUsername = apiLogin.username();
+            List<CategoryJson> categories = spendClient.getAllCategories(apiLoginUsername, false);
+            List<SpendJson> spends = spendClient.getSpendsForUser(apiLoginUsername, null, null, null);
+            List<UserJson> friends = usersClient.getFriends(apiLoginUsername);
+            List<UserJson> outcomeInvitations = usersClient.getOutcomeInvitations(apiLoginUsername);
+            List<UserJson> incomeInvitations = usersClient.getIncomeInvitations(apiLoginUsername);
+
+            TestData testData = new TestData(
+                    apiLogin.password(),
+                    categories,
+                    spends,
+                    friends,
+                    outcomeInvitations,
+                    incomeInvitations);
+
             UserJson fakeUser = new UserJson(
-                apiLogin.username(),
-                new TestData(
-                    apiLogin.password()
-                )
+                apiLoginUsername,
+                testData
             );
+
             if (userFromUserExtension != null) {
               throw new IllegalStateException("@User must not be present in case that @ApiLogin contains username or password!");
             }

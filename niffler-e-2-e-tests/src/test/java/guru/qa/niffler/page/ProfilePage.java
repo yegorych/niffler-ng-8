@@ -117,7 +117,7 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
     @Step("check profile photo")
     public void assertProfileAvatar(BufferedImage expectedImage) throws IOException {
-        Selenide.sleep(2000);
+        Selenide.sleep(3000);
         BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
         assertFalse(new ScreenDiffResult(
                 expectedImage,

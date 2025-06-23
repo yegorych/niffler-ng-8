@@ -16,6 +16,8 @@ import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
 public class FriendPage extends BasePage<FriendPage> {
+    public static final String URL = CFG.frontUrl() + "people/friends";
+
     private final static ElementsCollection friends = $$("#friends tr");
     private final static SelenideElement friendTab = $("a[href='/people/friends']");
     private final static SelenideElement searchInput = $("input[type='text']");

@@ -2,13 +2,13 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.UserJson;
-import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.ProfilePage;
 import org.junit.jupiter.api.Test;
@@ -31,15 +31,11 @@ public class ProfileTest {
             )
     )
     @Test
+    @ApiLogin
     void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
         final CategoryJson archivedCategory = user.testData().categories().getFirst();
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .submit(new MainPage())
-                .getHeader()
-                .openMenu()
-                .toProfilePage()
+        Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .archiveCategory(archivedCategory.name())
                 .assertCategoryIsArchived(archivedCategory.name());
     }
@@ -51,14 +47,10 @@ public class ProfileTest {
             )
     )
     @Test
+    @ApiLogin
     void activeCategoryShouldPresentInCategoriesList(UserJson user) {
         final CategoryJson archivedCategory = user.testData().categories().getFirst();
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .submit(new MainPage())
-                .getHeader()
-                .openMenu()
-                .toProfilePage()
+        Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .showArchivedCategories()
                 .unarchiveCategory(archivedCategory.name())
                 .assertCategoryIsUnarchived(archivedCategory.name());
@@ -67,16 +59,11 @@ public class ProfileTest {
 
   @User
   @ScreenShotTest(value = "img/expected-avatar.png", rewriteExpected = true)
+  @ApiLogin
   void shouldUpdateProfileWithAllFieldsSet(UserJson user, BufferedImage expectedAvatar) throws IOException {
     final String newName = randomName();
 
-    ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
-        .doLogin(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .openMenu()
-        .toProfilePage()
+    ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
         .uploadPicture("img/cat.png")
         .updateName(newName)
         .checkAlertMessage("Profile successfully updated");
@@ -90,15 +77,11 @@ public class ProfileTest {
 
   @User
   @Test
+  @ApiLogin
   void shouldUpdateProfileWithOnlyRequiredFields(UserJson user) {
     final String newName = randomName();
 
-    ProfilePage profilePage = Selenide.open(LoginPage.URL, LoginPage.class)
-        .doLogin(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader().openMenu()
-        .toProfilePage()
+    ProfilePage profilePage = Selenide.open(ProfilePage.URL, ProfilePage.class)
         .updateName(newName)
         .checkAlertMessage("Profile successfully updated");
 
@@ -108,16 +91,11 @@ public class ProfileTest {
 
   @User
   @Test
+  @ApiLogin
   void shouldAddNewCategory(UserJson user) {
     String newCategory = randomCategoryName();
 
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .doLogin(user.username(), user.testData().password())
-        .submit(new MainPage())
-        .checkThatPageLoaded()
-        .getHeader()
-        .openMenu()
-        .toProfilePage()
+    Selenide.open(ProfilePage.URL, ProfilePage.class)
         .addCategory(newCategory)
         .checkAlertMessage("You've added new category:")
         .checkCategoryExists(newCategory);
@@ -136,10 +114,9 @@ public class ProfileTest {
       }
   )
   @Test
+  @ApiLogin
   void shouldForbidAddingMoreThat8Categories(UserJson user) {
-    Selenide.open(LoginPage.URL, LoginPage.class)
-        .doLogin(user.username(), user.testData().password())
-        .submit(new MainPage())
+      Selenide.open(MainPage.URL, MainPage.class)
         .checkThatPageLoaded();
 
     Selenide.open(ProfilePage.URL, ProfilePage.class)
@@ -148,13 +125,9 @@ public class ProfileTest {
 
     @User
     @Test
+    @ApiLogin
     void updateProfileTest(UserJson user) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .submit(new MainPage())
-                .getHeader()
-                .openMenu()
-                .toProfilePage()
+        Selenide.open(ProfilePage.URL, ProfilePage.class)
                 .updateName(randomName())
                 .checkAlertMessage("Profile successfully updated");
     }
