@@ -32,18 +32,11 @@ public class FriendsRestTest {
   private final GatewayApiClient gatewayApiClient = new GatewayApiClient();
   private final UsersClient usersClient = new UsersApiClient();
 
-  @User(friends = 1, incomeInvitations = 2)
-  @ApiLogin
-  @Test
-  void friendsAndIncomeInvitationsShouldBeReturnedFromGateway(@Token String bearerToken) {
-    final List<UserJson> responseBody = gatewayApiClient.allFriends(bearerToken, null);
-    Assertions.assertEquals(3, responseBody.size());
-  }
 
   @User(incomeInvitations = 1, friends = 1)
   @ApiLogin
   @Test
-  void name(UserJson user,  @Token String bearerToken) {
+  void friendsAndIncomeInvitationsShouldBeReturnedFromGateway(UserJson user,  @Token String bearerToken) {
     final List<UserJson> responseBody = gatewayApiClient.allFriends(bearerToken, null);
     Assertions.assertAll(
             () -> Assertions.assertEquals(
@@ -63,7 +56,7 @@ public class FriendsRestTest {
   @User(friends = 1)
   @ApiLogin
   @Test
-  void name2(UserJson user,  @Token String bearerToken) {
+  void friendsShouldBeDeletedByGateway(UserJson user,  @Token String bearerToken) {
     user.testData().friends().forEach(friend-> gatewayApiClient.removeFriend(bearerToken, friend.username()));
     final List<UserJson> friendsList = gatewayApiClient.allFriends(bearerToken, null);
     Assertions.assertTrue(friendsList.isEmpty());
@@ -72,7 +65,7 @@ public class FriendsRestTest {
   @User(incomeInvitations = 2)
   @ApiLogin
   @Test
-  void name3(UserJson user,  @Token String bearerToken) {
+  void incomeInvitationsShouldBeAcceptedByGateway(UserJson user,  @Token String bearerToken) {
     final int expectedFriends = user.testData().incomeInvitations().size();
     user.testData().incomeInvitations().forEach(income-> gatewayApiClient.acceptInvitation(bearerToken, income.username()));
     final List<UserJson> friendsList = gatewayApiClient.allFriends(bearerToken, null).stream()
@@ -83,36 +76,31 @@ public class FriendsRestTest {
   @User(incomeInvitations = 2)
   @ApiLogin
   @Test
-  void namePar(UserJson user,  @Token String bearerToken) {
+  void incomeInvitationsShouldBeDeclinedByGateway(UserJson user,  @Token String bearerToken) {
     user.testData().incomeInvitations().forEach(income-> gatewayApiClient.declineInvitation(bearerToken, income.username()));
     final List<UserJson> friendsList = gatewayApiClient.allFriends(bearerToken, null);
     Assertions.assertTrue(friendsList.isEmpty());
   }
 
-  @ParameterizedTest
-  @ValueSource(ints = {1, 2, 3})
-  void namePar(int number) {
-    System.out.println(number);
-  }
-
   @User
   @ApiLogin
   @Test
-  void name5 (UserJson user,  @Token String bearerToken) {
+  void incomeAndOutcomeInvitationsShouldBeCreatedByGateway(UserJson user,  @Token String bearerToken) {
     String randomUsername = RandomDataUtils.randomUsername();
     String randomPassword = "12345";
     UserJson targetUser = usersClient.createUser(randomUsername, randomPassword);
 
     gatewayApiClient.sendInvitation(bearerToken, targetUser.username());
-    Assertions.assertEquals(
-            targetUser.username(),
-            usersClient.getOutcomeInvitations(user.username()).getFirst().username()
-    );
-    Assertions.assertEquals(
-            user.username(),
-            usersClient.getIncomeInvitations(targetUser.username()).getFirst().username()
-    );
 
-
+    Assertions.assertAll(
+            () -> Assertions.assertEquals(
+                    targetUser.username(),
+                    usersClient.getOutcomeInvitations(user.username()).getFirst().username()
+            ),
+            () -> Assertions.assertEquals(
+                    user.username(),
+                    usersClient.getIncomeInvitations(targetUser.username()).getFirst().username()
+            )
+    );
   }
 }

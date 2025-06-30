@@ -106,7 +106,11 @@ public class SpendDbClient implements SpendClient {
 
     @NotNull
     @Override
-    public List<SpendJson> getSpendsForUser(String username, @org.jetbrains.annotations.Nullable CurrencyValues currency, @org.jetbrains.annotations.Nullable Date from, @org.jetbrains.annotations.Nullable Date to) {
+    public List<SpendJson> getSpendsForUser(
+            String username,
+            @Nullable CurrencyValues currency,
+            @Nullable Date from,
+            @Nullable Date to) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
