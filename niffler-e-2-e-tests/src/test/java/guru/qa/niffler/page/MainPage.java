@@ -1,12 +1,11 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.*;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.StatComponent;
 import io.qameta.allure.Step;
-import lombok.Getter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,6 +18,7 @@ import static guru.qa.niffler.condition.SpendConditions.spend;
 
 @ParametersAreNonnullByDefault
 public class MainPage extends BasePage<MainPage> {
+  public static final String URL = CFG.frontUrl() + "main";
   private final Header header = new Header();
   private final ElementsCollection tableRows = $$("#spendings tbody tr");
   private final SelenideElement statistics = $("#stat");

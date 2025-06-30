@@ -1,6 +1,6 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.api;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -26,5 +26,8 @@ public interface UserApi {
     Call<UserJson> current(@Query("username") String username);
 
     @GET("/internal/users/all")
-    Call<List<UserJson>> all(@Query("username") String username);
+    Call<List<UserJson>> getUsers(@Query("username") String username);
+
+    @GET("/internal/friends/all")
+    Call<List<UserJson>> getFriends(@Query("username") String username);
 }

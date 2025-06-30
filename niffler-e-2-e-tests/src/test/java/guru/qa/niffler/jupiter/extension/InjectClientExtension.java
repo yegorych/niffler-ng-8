@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 
 import java.lang.reflect.Field;
 
-public class UsersClientExtension implements TestInstancePostProcessor {
+public class InjectClientExtension implements TestInstancePostProcessor {
   @Override
   public void postProcessTestInstance(Object testInstance, ExtensionContext context) throws Exception {
     for (Field field : testInstance.getClass().getDeclaredFields()) {

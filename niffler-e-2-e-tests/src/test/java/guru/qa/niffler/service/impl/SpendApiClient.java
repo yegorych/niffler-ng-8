@@ -2,24 +2,23 @@ package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.api.core.RestClient;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.service.client.SpendClient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 
 @ParametersAreNonnullByDefault
 public class SpendApiClient extends RestClient implements SpendClient{
   private final SpendApi spendApi = create(SpendApi.class);
 
-  public SpendApiClient(String baseUrl) {
-      super(baseUrl);
+  public SpendApiClient() {
+      super(CFG.spendUrl());
   }
 
     @NotNull
@@ -64,4 +63,23 @@ public class SpendApiClient extends RestClient implements SpendClient{
     public void deleteCategory(CategoryJson category) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @NotNull
+    @Override
+    public List<SpendJson> getSpendsForUser(String username,
+                                            @Nullable CurrencyValues currency,
+                                            @Nullable Date from,
+                                            @Nullable Date to) {
+      return Objects.requireNonNull(
+              executeCall(spendApi.getSpends(username, currency, from, to))
+      );
+    }
+
+    @NotNull
+    @Override
+    public List<CategoryJson> getAllCategories(String username, boolean excludeArchived) {
+        return Objects.requireNonNull(executeCall(spendApi.getCategories(username, excludeArchived)));
+    }
+
+
 }

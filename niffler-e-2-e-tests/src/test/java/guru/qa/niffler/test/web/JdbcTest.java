@@ -4,10 +4,10 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.*;
-import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 import org.junit.jupiter.api.Assertions;
@@ -78,9 +78,9 @@ public class JdbcTest {
         UsersDbClient usersDbClient = new UsersDbClient();
         String username = randomUsername();
         UserJson user = usersDbClient.createUser(username, "12345");
-        usersDbClient.createFriends(user, 1);
-        usersDbClient.createIncomeInvitations(user, 2);
-        usersDbClient.createOutcomeInvitations(user, 3);
+        usersDbClient.addFriends(user, 1);
+        usersDbClient.addIncomeInvitations(user, 2);
+        usersDbClient.addOutcomeInvitations(user, 3);
     }
 
     static Stream<Arguments> userdataAndAuthRepositoryProvider() {

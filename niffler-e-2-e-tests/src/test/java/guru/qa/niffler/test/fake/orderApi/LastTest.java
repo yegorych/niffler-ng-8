@@ -1,6 +1,6 @@
-package guru.qa.niffler.test.orderApi;
+package guru.qa.niffler.test.fake.orderApi;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.client.UsersClient;
 import guru.qa.niffler.service.impl.UsersApiClient;
 import org.junit.jupiter.api.Assertions;

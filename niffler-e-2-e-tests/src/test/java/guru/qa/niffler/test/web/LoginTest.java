@@ -2,11 +2,11 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.MainPage;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,13 +30,14 @@ public class LoginTest {
     @User
     void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
         loginPage.doLogin(user.username(), user.testData().password())
+                .submit(new MainPage())
                 .assertStatisticsIsVisible()
                 .assertHistorySpendingIsVisible();
     }
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-        loginPage.doLogin(randomUsername(), randomPassword());
+        loginPage.doLogin(randomUsername(), randomPassword()).submit(null);
         loginPage.isLoginPage().assertBadCredentials();
 
     }

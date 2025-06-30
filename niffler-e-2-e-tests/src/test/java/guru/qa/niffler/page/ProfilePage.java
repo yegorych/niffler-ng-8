@@ -17,8 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -27,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
 public class ProfilePage extends BasePage<ProfilePage> {
+    public static final String URL = CFG.frontUrl() + "profile";
     private final ElementsCollection categories = $$(".MuiChip-label");
     private final SelenideElement showArchivedCheckbox = $("[type='checkbox']");
     private final SelenideElement approveArchiveBtn = $(".MuiDialogActions-root").find(byText("Archive"));
@@ -38,7 +38,10 @@ public class ProfilePage extends BasePage<ProfilePage> {
     private final SelenideElement saveChangesButton = $("[type='submit']");
     private final SelenideElement avatar = $("#image__input").parent().$("img");
     private final SelenideElement username = $("#username");
-    private final SelenideElement name = $("#name");
+    private final SelenideElement nameInput = $("#name");
+    private final SelenideElement categoryInput = $("input[name='category']");
+    private final ElementsCollection bubbles = $$(".MuiChip-filled.MuiChip-colorPrimary");
+
     @Getter
     Header header = new Header();
 
@@ -114,13 +117,20 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
     @Step("check profile photo")
     public void assertProfileAvatar(BufferedImage expectedImage) throws IOException {
-        Selenide.sleep(1000);
+        Selenide.sleep(3000);
         BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
         assertFalse(new ScreenDiffResult(
                 expectedImage,
                 actualImage
         ),
             ASSERT_SCREEN_MESSAGE);
+    }
+
+    @Step("Check photo exist")
+    @Nonnull
+    public ProfilePage checkPhotoExist() {
+        avatar.should(attributeMatching("src", "data:image.*"));
+        return this;
     }
 
     @Nonnull
@@ -135,11 +145,12 @@ public class ProfilePage extends BasePage<ProfilePage> {
     @Nonnull
     @Step("update name")
     public ProfilePage updateName(String newName) {
-        name.clear();
-        name.sendKeys(newName);
+        nameInput.clear();
+        nameInput.sendKeys(newName);
         saveChangesButton.click();
         return this;
     }
+
 
 
     @Override
@@ -147,4 +158,36 @@ public class ProfilePage extends BasePage<ProfilePage> {
     public ProfilePage checkThatPageLoaded() {
         throw new NotImplementedException("This method has not been implemented yet");
     }
+
+    @Step("Check name: '{0}'")
+    @Nonnull
+    public ProfilePage checkName(String name) {
+        nameInput.shouldHave(value(name));
+        return this;
+    }
+
+
+    @Step("Set category: '{0}'")
+    @Nonnull
+    public ProfilePage addCategory(String category) {
+        categoryInput.setValue(category).pressEnter();
+        return this;
+    }
+
+    @Step("Check category: '{0}'")
+    @Nonnull
+    public ProfilePage checkCategoryExists(String category) {
+        bubbles.find(text(category)).shouldBe(visible);
+        return this;
+    }
+
+    @Step("Check that category input is disabled")
+    @Nonnull
+    public ProfilePage checkThatCategoryInputDisabled() {
+        categoryInput.should(disabled);
+        return this;
+    }
+
+
+
 }

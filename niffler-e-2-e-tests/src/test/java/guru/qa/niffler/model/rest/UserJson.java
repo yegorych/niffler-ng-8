@@ -1,12 +1,16 @@
-package guru.qa.niffler.model;
+package guru.qa.niffler.model.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.FriendshipStatus;
+import guru.qa.niffler.model.TestData;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -54,31 +58,53 @@ public record UserJson(
     );
   }
 
+  public UserJson(String username) {
+    this(username, null);
+  }
+
+  public UserJson(String username, TestData testData) {
+    this(null, username, null, null, null, null, null, null, null, testData);
+  }
+
   public UserJson withPassword(String password) {
-      if (testData != null) {
-          return withTestData(
-                  new TestData(
-                          password,
-                          testData.categories(),
-                          testData.spendings(),
-                          testData.friendshipRequests(),
-                          testData.friendshipAddressees(),
-                          testData.friends()
-                  )
-          );
-      }
-      else return withTestData(
+      //if (testData != null) {
+      return withTestData(
               new TestData(
                       password,
-                      new ArrayList<>(),
-                      new ArrayList<>(),
-                      new ArrayList<>(),
-                      new ArrayList<>(),
-                      new ArrayList<>()
+                      testData.categories(),
+                      testData.spendings(),
+                      testData.friends(),
+                      testData.outcomeInvitations(),
+                      testData.incomeInvitations()
               )
       );
 
+//      else return withTestData(
+//              new TestData(
+//                      password,
+//                      new ArrayList<>(),
+//                      new ArrayList<>(),
+//                      new ArrayList<>(),
+//                      new ArrayList<>(),
+//                      new ArrayList<>()
+//              )
+//      );
   }
+
+    public UserJson withUsers(List<UserJson> friends,
+                              List<UserJson> outcomeInvitations,
+                              List<UserJson> incomeInvitations) {
+        return withTestData(
+                new TestData(
+                        testData.password(),
+                        testData.categories(),
+                        testData.spendings(),
+                        friends,
+                        outcomeInvitations,
+                        incomeInvitations
+                )
+        );
+    }
 
     public UserJson withTestData(TestData testData) {
         return new UserJson(

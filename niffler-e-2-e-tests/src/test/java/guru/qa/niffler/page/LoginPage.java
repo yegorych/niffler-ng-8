@@ -8,11 +8,13 @@ import javax.annotation.Nonnull;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 @Nonnull
 public class LoginPage extends BasePage<LoginPage> {
 
+  public static final String URL = CFG.frontUrl() + "login";
   private final static String BAD_CREDENTIALS_ERROR_MESSAGE = "Неверные учетные данные пользователя";
   private final SelenideElement usernameInput = $("input[name='username']");
   private final SelenideElement passwordInput = $("input[name='password']");
@@ -20,11 +22,10 @@ public class LoginPage extends BasePage<LoginPage> {
   private final SelenideElement registerBtn = $("a.form__register");
 
   @Nonnull
-  public MainPage doLogin(String username, String password) {
+  public LoginPage doLogin(String username, String password) {
     usernameInput.setValue(username);
     passwordInput.setValue(password);
-    submitBtn.click();
-    return new MainPage();
+    return this;
   }
 
   @Nonnull
@@ -37,7 +38,7 @@ public class LoginPage extends BasePage<LoginPage> {
 
   @Step("check bad credentials error")
   public void assertBadCredentials(){
-    checkFormErrorMessage(BAD_CREDENTIALS_ERROR_MESSAGE);
+    $(byText(BAD_CREDENTIALS_ERROR_MESSAGE)).should(visible);
   }
 
   @Nonnull
@@ -46,6 +47,13 @@ public class LoginPage extends BasePage<LoginPage> {
     usernameInput.should(visible);
     passwordInput.should(visible);
     return this;
+  }
+
+  @Step("Submit login")
+  @Nonnull
+  public <T extends BasePage<?>> T submit(T expectedPage) {
+    submitBtn.click();
+    return expectedPage;
   }
 
   @Override

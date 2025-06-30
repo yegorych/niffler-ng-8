@@ -6,13 +6,16 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.data.repository.impl.SpendRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.service.client.SpendClient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -99,5 +102,17 @@ public class SpendDbClient implements SpendClient {
             spendRepository.removeCategory(CategoryEntity.fromJson(category));
             return null;
         });
+    }
+
+    @NotNull
+    @Override
+    public List<SpendJson> getSpendsForUser(String username, @org.jetbrains.annotations.Nullable CurrencyValues currency, @org.jetbrains.annotations.Nullable Date from, @org.jetbrains.annotations.Nullable Date to) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @NotNull
+    @Override
+    public List<CategoryJson> getAllCategories(String username, boolean excludeArchived) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

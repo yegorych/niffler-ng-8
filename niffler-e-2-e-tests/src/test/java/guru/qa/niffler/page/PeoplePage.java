@@ -18,6 +18,9 @@ import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
 public class PeoplePage extends BasePage<PeoplePage> {
+
+    public static final String URL = CFG.frontUrl() + "people/all";
+
     @Getter
     Header header = new Header();
     private final ElementsCollection people = $$("#all tr");
