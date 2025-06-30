@@ -2,9 +2,12 @@ package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.GatewayApi;
 import guru.qa.niffler.api.core.RestClient;
+import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import io.qameta.allure.Step;
+import retrofit2.Call;
 import retrofit2.Response;
+import retrofit2.http.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,14 +32,42 @@ public class GatewayApiClient extends RestClient {
   @Nonnull
   public List<UserJson> allFriends(String bearerToken,
                                    @Nullable String searchQuery) {
-    final Response<List<UserJson>> response;
-    try {
-      response = gatewayApi.allFriends(bearerToken, searchQuery)
-          .execute();
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
-    assertEquals(200, response.code());
-    return requireNonNull(response.body());
+    return requireNonNull(executeCall(gatewayApi.allFriends(addBearer(bearerToken), searchQuery)));
   }
+
+  @Step("Get all users & outcome invitations using /api/users/all endpoint")
+  @Nonnull
+  public List<UserJson> allUsers(String bearerToken,
+                                   @Nullable String searchQuery) {
+    return requireNonNull(executeCall(gatewayApi.allUsers(addBearer(bearerToken), searchQuery)));
+  }
+
+  @Step("Get all users & outcome invitations using /api/users/all endpoint")
+  public void removeFriend(String bearerToken, @Nullable String targetName){
+    executeCall(gatewayApi.removeFriend(addBearer(bearerToken), targetName));
+  }
+
+  @Step("Get all users & outcome invitations using /api/users/all endpoint")
+  @Nonnull
+  public UserJson sendInvitation(String  bearerToken, String targetName){
+    return requireNonNull(executeCall(gatewayApi.sendInvitation(addBearer(bearerToken), new FriendJson(targetName))));
+  }
+
+  @Step("Get all users & outcome invitations using /api/users/all endpoint")
+  @Nonnull
+  public UserJson acceptInvitation(String  bearerToken, String targetName){
+    return requireNonNull(executeCall(gatewayApi.acceptInvitation(addBearer(bearerToken), new FriendJson(targetName))));
+  }
+
+  @Step("Get all users & outcome invitations using /api/users/all endpoint")
+  @Nonnull
+  public UserJson declineInvitation(String bearerToken, String targetName){
+    return requireNonNull(executeCall(gatewayApi.declineInvitation(addBearer(bearerToken), new FriendJson(targetName))));
+  }
+
+
+
+
+
+
 }

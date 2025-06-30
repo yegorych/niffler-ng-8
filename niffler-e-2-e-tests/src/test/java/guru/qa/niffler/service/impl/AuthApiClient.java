@@ -58,6 +58,7 @@ public class AuthApiClient extends RestClient {
   }
 
 
+
     public void requestRegisterForm() {
         executeCall(authApi.requestRegisterForm());
     }

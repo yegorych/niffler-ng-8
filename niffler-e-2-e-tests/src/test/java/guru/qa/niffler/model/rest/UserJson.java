@@ -8,6 +8,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.TestData;
 
+import javax.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,28 +68,31 @@ public record UserJson(
   }
 
   public UserJson withPassword(String password) {
-      //if (testData != null) {
-      return withTestData(
-              new TestData(
-                      password,
-                      testData.categories(),
-                      testData.spendings(),
-                      testData.friends(),
-                      testData.outcomeInvitations(),
-                      testData.incomeInvitations()
-              )
-      );
+      if (testData != null) {
+          return withTestData(
+                  new TestData(
+                          password,
+                          testData.categories(),
+                          testData.spendings(),
+                          testData.friends(),
+                          testData.outcomeInvitations(),
+                          testData.incomeInvitations()
+                  )
+          );
+      } else {
+          return withTestData(
+                  new TestData(
+                          password,
+                          new ArrayList<>(),
+                          new ArrayList<>(),
+                          new ArrayList<>(),
+                          new ArrayList<>(),
+                          new ArrayList<>()
+                  )
+          );
+      }
 
-//      else return withTestData(
-//              new TestData(
-//                      password,
-//                      new ArrayList<>(),
-//                      new ArrayList<>(),
-//                      new ArrayList<>(),
-//                      new ArrayList<>(),
-//                      new ArrayList<>()
-//              )
-//      );
+
   }
 
     public UserJson withUsers(List<UserJson> friends,
@@ -119,4 +123,6 @@ public record UserJson(
                 friendshipStatus,
                 testData);
     }
+
+
 }
