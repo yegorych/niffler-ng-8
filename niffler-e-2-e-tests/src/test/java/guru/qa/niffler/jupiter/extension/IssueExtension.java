@@ -11,6 +11,8 @@ import org.junit.platform.commons.support.SearchOption;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 
 @ParametersAreNonnullByDefault
@@ -22,16 +24,23 @@ public class IssueExtension implements ExecutionCondition {
   @Override
   @Nonnull
   public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
-    return AnnotationSupport.findAnnotation(
-        context.getRequiredTestMethod(),
-        DisabledByIssue.class
-    ).or(
-        () -> AnnotationSupport.findAnnotation(
-            context.getRequiredTestClass(),
-            DisabledByIssue.class,
-            SearchOption.INCLUDE_ENCLOSING_CLASSES
-        )
-    ).map(
+    final Optional<Method> method = context.getTestMethod();
+    final Class<?> clazz = context.getRequiredTestClass();
+    final Optional<DisabledByIssue> annotation;
+    if (method.isPresent()) {
+      annotation = AnnotationSupport.findAnnotation(
+          method.get(),
+          DisabledByIssue.class
+      );
+    } else {
+      annotation = AnnotationSupport.findAnnotation(
+          clazz,
+          DisabledByIssue.class,
+          SearchOption.INCLUDE_ENCLOSING_CLASSES
+      );
+    }
+
+    return annotation.map(
         byIssue -> "open".equals(ghApiClient.issueState(byIssue.value()))
             ? ConditionEvaluationResult.disabled("Disabled by issue #" + byIssue.value())
             : ConditionEvaluationResult.enabled("Issue closed")
