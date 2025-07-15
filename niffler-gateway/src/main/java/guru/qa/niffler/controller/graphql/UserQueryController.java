@@ -78,7 +78,7 @@ public class UserQueryController {
   @QueryMapping
   public UserGql user(@AuthenticationPrincipal Jwt principal,
                       @Nonnull DataFetchingEnvironment env) {
-    checkSubQueries(env, 2, "friends");
+    checkSubQueries(env, 1, "friends");
     final String username = principal.getClaim("sub");
     return UserGql.fromUserJson(
         userDataClient.currentUser(username)

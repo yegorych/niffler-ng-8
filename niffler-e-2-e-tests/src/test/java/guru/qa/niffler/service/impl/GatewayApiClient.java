@@ -32,37 +32,37 @@ public class GatewayApiClient extends RestClient {
   @Nonnull
   public List<UserJson> allFriends(String bearerToken,
                                    @Nullable String searchQuery) {
-    return requireNonNull(executeCall(gatewayApi.allFriends(addBearer(bearerToken), searchQuery)));
+    return requireNonNull(executeCall(gatewayApi.allFriends(bearerToken, searchQuery)));
   }
 
   @Step("Get all users & outcome invitations using /api/users/all endpoint")
   @Nonnull
   public List<UserJson> allUsers(String bearerToken,
                                    @Nullable String searchQuery) {
-    return requireNonNull(executeCall(gatewayApi.allUsers(addBearer(bearerToken), searchQuery)));
+    return requireNonNull(executeCall(gatewayApi.allUsers(bearerToken, searchQuery)));
   }
 
   @Step("Get all users & outcome invitations using /api/users/all endpoint")
   public void removeFriend(String bearerToken, @Nullable String targetName){
-    executeCall(gatewayApi.removeFriend(addBearer(bearerToken), targetName));
+    executeCall(gatewayApi.removeFriend(bearerToken, targetName));
   }
 
   @Step("Get all users & outcome invitations using /api/users/all endpoint")
   @Nonnull
   public UserJson sendInvitation(String  bearerToken, String targetName){
-    return requireNonNull(executeCall(gatewayApi.sendInvitation(addBearer(bearerToken), new FriendJson(targetName))));
+    return requireNonNull(executeCall(gatewayApi.sendInvitation(bearerToken, new FriendJson(targetName))));
   }
 
   @Step("Get all users & outcome invitations using /api/users/all endpoint")
   @Nonnull
-  public UserJson acceptInvitation(String  bearerToken, String targetName){
-    return requireNonNull(executeCall(gatewayApi.acceptInvitation(addBearer(bearerToken), new FriendJson(targetName))));
+  public UserJson acceptInvitation(String bearerToken, String targetName){
+    return requireNonNull(executeCall(gatewayApi.acceptInvitation(bearerToken, new FriendJson(targetName))));
   }
 
   @Step("Get all users & outcome invitations using /api/users/all endpoint")
   @Nonnull
   public UserJson declineInvitation(String bearerToken, String targetName){
-    return requireNonNull(executeCall(gatewayApi.declineInvitation(addBearer(bearerToken), new FriendJson(targetName))));
+    return requireNonNull(executeCall(gatewayApi.declineInvitation(bearerToken, new FriendJson(targetName))));
   }
 
 

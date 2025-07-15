@@ -85,6 +85,7 @@ sourceSets {
 }
 
 dependencies {
+    implementation 'ru.yandex.qatools.ashot:ashot:1.5.4'
     // Logs
     testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
     testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
