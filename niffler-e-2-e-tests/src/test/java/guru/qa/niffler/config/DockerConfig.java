@@ -63,4 +63,10 @@ public class DockerConfig implements Config {
     public String ghUrl() {
         return "";
     }
+
+    @NotNull
+    @Override
+    public String currencyGrpcAddress() {
+        return "";
+    }
 }
