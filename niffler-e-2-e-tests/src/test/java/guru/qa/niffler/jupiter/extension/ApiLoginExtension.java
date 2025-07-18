@@ -112,7 +112,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
 
   @Override
   public String resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-    return getToken();
+    return "Bearer " + getToken();
   }
 
   public static void setToken(String token) {

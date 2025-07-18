@@ -1,0 +1,26 @@
+query Categories {
+    user {
+        categories {
+            id
+            name
+            archived
+        }
+    }
+}
+
+query FriendCategories($page:Int!, $size:Int!) {
+    user {
+        friends(page: $page, size: $size){
+            edges {
+                node {
+                    categories {
+                        id
+                        name
+                        archived
+                    }
+                }
+            }
+        }
+    }
+}
+

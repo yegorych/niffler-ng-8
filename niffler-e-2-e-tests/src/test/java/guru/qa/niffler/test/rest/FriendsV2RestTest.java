@@ -25,7 +25,7 @@ public class FriendsV2RestTest {
   @Test
   void friendsAndIncomeInvitationsShouldBeReturnedFromGateway(@Token String bearerToken) {
     final Page<UserJson> responseBody = gatewayV2ApiClient.allFriends(
-        "Bearer " + bearerToken,
+        bearerToken,
         0,
         10,
         null

@@ -1,7 +1,6 @@
 package guru.qa.niffler.data.dao;
 
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import org.checkerframework.checker.units.qual.A;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

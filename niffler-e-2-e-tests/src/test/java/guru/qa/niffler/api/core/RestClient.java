@@ -103,10 +103,6 @@ public abstract class RestClient {
     return response;
   }
 
-  protected static String addBearer(String token) {
-    return "Bearer " + token;
-  }
-
   public final class EmtyRestClient extends RestClient {
     public EmtyRestClient(String baseUrl) {
       super(baseUrl);

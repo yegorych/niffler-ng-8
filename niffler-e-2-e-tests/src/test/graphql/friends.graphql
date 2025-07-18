@@ -1,0 +1,44 @@
+query FriendsOfFriends($page: Int!, $size: Int!) {
+    user {
+        friends(page: $page, size: $size) {
+            edges {
+                node {
+                    username
+                    friends(page: $page, size: $size) {
+                        edges {
+                            node {
+                                username
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+query FriendsOfFriendsOfFriends($page: Int!, $size: Int!) {
+    user {
+        friends(page: $page, size: $size) {
+            edges {
+                node {
+                    username
+                    friends(page: $page, size: $size) {
+                        edges {
+                            node {
+                                username
+                                friends(page: $page, size: $size) {
+                                    edges {
+                                        node {
+                                            username
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
