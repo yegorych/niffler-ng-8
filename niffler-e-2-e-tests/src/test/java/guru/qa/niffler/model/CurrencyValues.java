@@ -1,5 +1,7 @@
 package guru.qa.niffler.model;
 
+import java.util.Arrays;
+
 public enum CurrencyValues {
   RUB("₽"),
   USD("$"),
@@ -7,6 +9,13 @@ public enum CurrencyValues {
   KZT("₸");
 
   private final String symbol;
+
+  public static CurrencyValues fromCurrencyGrpc(guru.qa.niffler.grpc.CurrencyValues currencyGrpc){
+      return Arrays.stream(CurrencyValues.values())
+              .filter(c -> c.name().equals(currencyGrpc.name()))
+              .findFirst()
+              .orElseThrow();
+  }
 
   CurrencyValues(String symbol) {
     this.symbol = symbol;
