@@ -21,6 +21,7 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static guru.qa.niffler.condition.ScreenshotConditions.image;
 import static guru.qa.niffler.jupiter.extension.ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -117,13 +118,8 @@ public class ProfilePage extends BasePage<ProfilePage> {
 
     @Step("check profile photo")
     public void assertProfileAvatar(BufferedImage expectedImage) throws IOException {
-        Selenide.sleep(3000);
-        BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
-        assertFalse(new ScreenDiffResult(
-                expectedImage,
-                actualImage
-        ),
-            ASSERT_SCREEN_MESSAGE);
+        avatar.should(image(expectedImage));
+
     }
 
     @Step("Check photo exist")
