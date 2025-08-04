@@ -118,15 +118,5 @@ public class SoapUsersTest {
     UserResponse response = userdataSoapClient.sendInvitation(sendInvitationRequest);
 
     Assertions.assertEquals(FriendshipStatus.INVITE_SENT, response.getUser().getFriendshipStatus());
-
-
   }
-
-
-
-
-
-
-
-
 }
