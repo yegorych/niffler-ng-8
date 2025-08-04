@@ -66,16 +66,4 @@ public interface UserdataSoapApi {
   @POST("ws")
   Call<UserResponse> sendInvitation(@Body SendInvitationRequest request);
 
-
-
-
-
-
-
-
-
-
-
-
-
 }
