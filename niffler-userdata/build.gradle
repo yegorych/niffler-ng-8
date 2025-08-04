@@ -35,7 +35,7 @@ xjcGeneration {
         wsdlSchema {
             schemaRootDir = "$projectDir/src/main/resources"
             schemaFile = 'userdata.xsd'
-            javaPackageName = 'jaxb.userdata'
+            javaPackageName = 'guru.qa.jaxb.userdata'
             sourceSet = 'main'
         }
     }
